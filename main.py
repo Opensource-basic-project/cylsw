@@ -41,6 +41,9 @@ app.include_router(main_dashboard_router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+@app.get("/")
+async def redirect_to_dashboard():
+    return RedirectResponse(url="/dashboard")
 #가상환경 권환 : Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 #가상환경 활성화 : .\venv\Scripts\Activate.ps1
 #서버 실행 : uvicorn main:app --reload

@@ -5,10 +5,11 @@ from db import SessionLocal, EndedLegislationNotice
 import requests
 from bs4 import BeautifulSoup
 import re
+from config import OPEN_ASSEMBLY_API_KEY
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
-API_KEY = "145bca1e52594533863a5b12ec70dbc9"
+API_KEY = OPEN_ASSEMBLY_API_KEY
 
 def get_db():
     db = SessionLocal()

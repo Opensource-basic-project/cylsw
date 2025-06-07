@@ -1,8 +1,9 @@
 import requests
 from db import SessionLocal, ForeignLawExample
 from sqlalchemy.orm import Session
+from config import NATIONAL_ASSEMBLY_LIBRARY_API_KEY
 
-API_KEY = "9f665ae0aeea4ed1bc2f23e1326456a2"
+API_KEY = NATIONAL_ASSEMBLY_LIBRARY_API_KEY
 ENDPOINT = "http://lnp.nanet.go.kr/openapi/lawissue"
 
 def fetch_foreign_examples(page_no=1, display_lines=100):

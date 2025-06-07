@@ -5,10 +5,11 @@ from db import SessionLocal, PlenaryBill
 import requests
 from bs4 import BeautifulSoup
 import json
+from config import OPEN_ASSEMBLY_API_KEY
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
-API_KEY = "145bca1e52594533863a5b12ec70dbc9"
+API_KEY = OPEN_ASSEMBLY_API_KEY
 
 # 이미지 키워드 매핑 JSON 로딩
 with open("keyword_image_map.json", "r", encoding="utf-8") as f:

@@ -1,8 +1,9 @@
 import requests
 from db import SessionLocal, ForeignLawTrend
 from sqlalchemy.orm import Session
+from config import NATIONAL_ASSEMBLY_LIBRARY_API_KEY
 
-API_KEY = "9f665ae0aeea4ed1bc2f23e1326456a2"
+API_KEY = NATIONAL_ASSEMBLY_LIBRARY_API_KEY
 ENDPOINT = "http://lnp.nanet.go.kr/openapi/lawpreced"
 KEYWORDS = ["법", "행정명령"]  # ✅ 다중 키워드 정의
 

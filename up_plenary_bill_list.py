@@ -1,8 +1,9 @@
 import requests
 from db import SessionLocal, PlenaryBill
 from sqlalchemy.orm import Session
+from config import OPEN_ASSEMBLY_API_KEY
 
-API_KEY = "145bca1e52594533863a5b12ec70dbc9"
+API_KEY = OPEN_ASSEMBLY_API_KEY
 
 def fetch_plenary_bills(age: int, pIndex: int = 1, pSize: int = 100):
     url = "https://open.assembly.go.kr/portal/openapi/nwbpacrgavhjryiph"  # 본회의 처리된 법안 API (예시)

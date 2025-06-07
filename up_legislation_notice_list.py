@@ -1,8 +1,9 @@
 import requests
 from db import SessionLocal, LegislationNotice, EndedLegislationNotice
 from sqlalchemy.orm import Session
+from config import OPEN_ASSEMBLY_API_KEY
 
-API_KEY = "145bca1e52594533863a5b12ec70dbc9"
+API_KEY = OPEN_ASSEMBLY_API_KEY
 
 # 진행 중 입법예고 가져오기
 def fetch_ongoing_notices(age: int, pIndex: int = 1, pSize: int = 100):

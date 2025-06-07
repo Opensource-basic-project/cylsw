@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 # 기능 파일 라우팅 
 from plenary_bills_list import router as plenary_router   
@@ -40,7 +41,6 @@ app.include_router(foreign_legislation_router)
 app.include_router(main_dashboard_router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 @app.get("/")
 async def redirect_to_dashboard():
     return RedirectResponse(url="/dashboard")

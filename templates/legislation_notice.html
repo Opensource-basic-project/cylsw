@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>입법예고</title>
+  <link rel="stylesheet" href="/static/css/list.css" />
+  <style>
+    a, button, input, select, h1, h2, h3, h4, h5, * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+      text-decoration: none;
+      background: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    menu, ol, ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    .bell {
+        width: 50px;
+        height: 50px;
+        background: url('/static/svg/mdi-bell0.svg') no-repeat center;
+        background-size: 50px 50px;
+        border: none;
+    }
+    .dual-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+      width:90%;
+      margin: 0 auto;
+      margin-top:20px;
+    }
+
+    .card {
+      width: 100%;
+      overflow-x: auto;
+      margin:0;
+      padding-bottom:40px;
+      padding-top:10px;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+    .status-buttons{
+        margin-left:3px;
+        margin-bottom:10px;
+    }
+    .status-buttons .btn {
+        padding: 4px 16px;
+        font-size: 24px;
+        min-width: 170px;
+        text-align: center;
+        background-color: #ffffff;
+        border-style: solid;
+        border-color:#E0E0E0;
+    }
+    th,td{
+      padding : 4px 13px;
+    }
+    .pagination{
+      margin-top:10px;
+    }
+    th:nth-child(1), td:nth-child(1) { width: 22%; } 
+    th:nth-child(2), td:nth-child(2) { width: 78%; }    
+
+  </style>
+</head>
+<body>
+    <div class="div">
+    <div class="div2">
+      <div class="div3">
+        <div class="div4">
+          <div class="boardname">DASHBOARD</div>
+          <div class="div5">
+            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
+            <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
+            <div class="item-4 active"><div class="div8"><a href="/legislation_notice">입법예고</div></div>
+            <div class="item-5"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
+            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="container">
+        <!-- 왼쪽 영역: 세로바, 제목, 버튼 -->
+        <div class="left-section">
+          <div class="rectangle-1244"></div>
+          <h2 class="page-title">입법예고</h2>
+          <div class="bell"></div>
+          <div style="color:#666666;">
+            법령의 제정, 개정, 폐지 과정에서 <br>
+            국민의 의견을 수렴하고 참여를 확대하기 위한 제도</div>
+        </div>
+        <!-- 오른쪽 영역: breadcrumb -->
+        <div class="breadcrumb">
+          <div class="home-icon"></div>
+          <span><strong> > 입법예고 </strong></span>
+        </div>
+      </div>
+  <div class="line-13"></div>
+
+  <div class="dual-container">
+
+  <!-- 진행 중 입법예고 -->
+  <div class="notice-box">
+    <div class="status-buttons">
+      <a href="/legislation_notice_ongoing" class="btn">진행중</a>
+    </div>
+    <div class="card">
+      <div>총 <strong>{{ total_count_ongoing }}건</strong> ({{ page_ongoing }} / {{ total_pages_ongoing }})</div>
+      <table>
+        <thead>
+          <tr>
+            <th>마감일</th>
+            <th>법안명</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for notice in ongoing_notices %}
+          <tr>
+            <td>{{ notice.NOTI_ED_DT }}</td>
+            <td><a href="/legislation_ongoing/{{ notice.BILL_ID }}">{{ notice.BILL_NAME }}</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="pagination">
+        {% if page_ongoing > 1 %}
+          <a class="page-arrow prev" href="?page_ongoing={{ page_ongoing - 1 }}&page_ended={{ page_ended }}"></a>
+        {% endif %}
+        {% for p in range(start_ongoing, end_ongoing + 1) %}
+          {% if p == page_ongoing %}
+            <span class="page-number active">{{ p }}</span>
+          {% else %}
+            <a class="page-number" href="?page_ongoing={{ p }}&page_ended={{ page_ended }}">{{ p }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_ongoing < total_pages_ongoing %}
+          <a class="page-arrow next" href="?page_ongoing={{ page_ongoing + 1 }}&page_ended={{ page_ended }}"></a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 종료된 입법예고 -->
+  <div class="notice-box">
+    <div class="status-buttons">
+      <a href="/legislation_notice_ended" class="btn">종료</a>
+    </div>
+    <div class="card">
+      <div>총 <strong>{{ total_count_ended }}건</strong> ({{ page_ended }} / {{ total_pages_ended }})</div>
+      <table>
+        <thead>
+          <tr>
+            <th>마감일</th>
+            <th>법안명</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for notice in ended_notices %}
+          <tr>
+            <td>{{ notice.NOTI_ED_DT }}</td>
+            <td><a href="/legislation_ended/{{ notice.BILL_ID }}">{{ notice.BILL_NAME }}</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="pagination">
+        {% if page_ended > 1 %}
+          <a class="page-arrow prev" href="?page_ongoing={{ page_ongoing }}&page_ended={{ page_ended - 1 }}"></a>
+        {% endif %}
+        {% for p in range(start_ended, end_ended + 1) %}
+          {% if p == page_ended %}
+            <span class="page-number active">{{ p }}</span>
+          {% else %}
+            <a class="page-number" href="?page_ongoing={{ page_ongoing }}&page_ended={{ p }}">{{ p }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_ended < total_pages_ended %}
+          <a class="page-arrow next" href="?page_ongoing={{ page_ongoing }}&page_ended={{ page_ended + 1 }}"></a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

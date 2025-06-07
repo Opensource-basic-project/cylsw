@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>법안 상세 - {{ bill.BILL_NM }}</title>
+    <link rel="stylesheet" href="/static/css/detail.css" />
+    <style>
+      a, button, input, select, h1, h2, h3, h4, h5, * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          border: none;
+          text-decoration: none;
+          background: none;
+          -webkit-font-smoothing: antialiased;
+      }
+      menu, ol, ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+      }
+    </style>
+</head>
+<body>
+    <div class="div2">
+      <div class="div3">
+        <div class="div4">
+          <div class="boardname">DASHBOARD</div>
+          <div class="div5">
+            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
+            <div class="item-2 active"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
+            <div class="item-4"><div class="div8"><a href="/legislation_notice">입법예고</a></div></div>
+            <div class="item-5"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
+            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="left-section">
+        <div class="rectangle-1244"></div>
+        <h2 class="page-title">본회의 법안 상세정보</h2>
+      </div>
+
+      <div class="breadcrumb">
+        <div class="home-icon"></div>
+        <span><strong> > 본회의 법안정보 > 상세</strong></span>
+      </div>
+    </div>
+
+    <div class="line-13"></div>
+
+    <div class="detail">
+      <h1>{{ bill.BILL_NAME }}</h1>
+      <table class="bill-info-table">
+        <tr>
+          <th>의안 번호</th>
+          <th>제안일</th>
+          <th>발의자</th>
+          <th>상임위원회</th>
+          <th>처리 상태</th>
+        </tr>
+        <tr>
+          <td>{{ bill.BILL_NO }}</td>
+          <td>{{ bill.PROPOSE_DT }}</td>
+          <td>{{ bill.PROPOSER }}</td>
+          <td>{{ bill.COMMITTEE_NM if bill.COMMITTEE_NM else '-' }}</td>
+          <td>{{ bill.PROC_RESULT_CD }}</td>
+        </tr>
+      </table>
+      <h2>제안 이유 및 주요 내용</h2>
+      <div class="proposal-text">{{ proposal_text }}</div>
+      <h2>심사 진행 정보</h2>
+        <table class="bill-review-table">
+          <tr>
+            <th>소관위 처리일</th>
+            <th>소관위 처리결과</th>
+            <th>법사위 처리일</th>
+            <th>법사위 처리결과</th>
+            <th>본회의 의결일</th>
+            <th>본회의 회의결과</th>
+          </tr>
+          <tr>
+            <td>{{ review_info.so_committee_date or "-" }}</td>
+            <td>{{ review_info.so_committee_result or "-" }}</td>
+            <td>{{ review_info.law_committee_date or "-" }}</td>
+            <td>{{ review_info.law_committee_result or "-" }}</td>
+            <td>{{ review_info.plenary_vote_date or "-" }}</td>
+            <td>{{ review_info.plenary_vote_result or "-" }}</td>
+          </tr>
+        </table>
+
+      {% if matched_images %}
+      <h2 class="section-title">관련 통계 시각화</h2>
+      <div class="stat-wrapper">
+        <!-- 이미지 표시 영역 -->
+        <div class="stat-main">
+          <div id="image-title" class="stat-main-title">{{ matched_images[0].title }}</div>
+          <div class="image-box">
+            <img id="image-content" src="{{ matched_images[0].src }}" alt="{{ matched_images[0].title }}" />
+          </div>
+        </div>
+
+        <!-- 오른쪽 사이드 메뉴 -->
+        <div class="stat-sidebar">
+          <div class="stat-sidebar-list">
+            {% for item in matched_images %}
+              <div class="stat-sidebar-item" onclick="showImage({{ loop.index0 }})">
+                <div class="graph"></div>
+                <div class="graph-title">{{ item.title }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+      <script>
+        const images = {{ matched_images | tojson }};
+        function showImage(index) {
+          document.getElementById("image-title").innerText = images[index].title;
+          const img = document.getElementById("image-content");
+          img.src = images[index].src;
+          img.alt = images[index].title;
+        }
+      </script>
+      {% endif %}
+
+
+
+
+      <p><a href="{{ link_url }}" target="_blank">국회 상세 페이지 바로가기</a></p>
+    </div>
+
+
+</body>
+</html>

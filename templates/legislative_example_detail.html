@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>입법례 상세 - {{ law.title }}</title>
+    <link rel="stylesheet" href="/static/css/detail.css" />
+    <style>
+      a, button, input, select, h1, h2, h3, h4, h5, * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          border: none;
+          text-decoration: none;
+          background: none;
+          -webkit-font-smoothing: antialiased;
+      }
+      menu, ol, ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+      }
+    </style>
+</head>
+<body>
+  <div class="div2">
+    <div class="div3">
+      <div class="div4">
+        <div class="boardname">DASHBOARD</div>
+        <div class="div5">
+          <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
+          <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
+          <div class="item-4"><div class="div8"><a href="/legislation_notice">입법예고</a></div></div>
+          <div class="item-5 active"><div class="div9"><a href="/legislative-examples">국외 입법정보</a></div></div>
+          <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="left-section">
+      <div class="rectangle-1244"></div>
+      <h2 class="page-title">주요국 입법례</h2>
+    </div>
+
+    <div class="breadcrumb">
+      <div class="home-icon"></div>
+      <span><strong> > 국외 입법정보 > 주요국 입법례</strong></span>
+    </div>
+  </div>
+
+  <div class="line-13"></div>
+
+  <div class="detail">
+    <h1>{{ law.title }}</h1>
+    <p><strong>발간일:</strong> {{ law.issue_date }}</p>
+    <p><strong>관련법률:</strong> {{ law.rel_law }}</p>
+    <p><strong>상임위원회:</strong> {{ law.asc_name }}</p>
+
+    <h2>상세 내용</h2>
+    <div class="proposal-text" style="white-space:pre-wrap;">{{ description | safe }}</div>
+
+    <p><a href="{{ law.detail_url }}" target="_blank">원문 페이지 바로가기</a></p>
+  </div>
+</body>
+</html>

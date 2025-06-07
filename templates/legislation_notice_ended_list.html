@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>종료된 입법예고 목록</title>
+    <link rel="stylesheet" href="/static/css/list.css" />
+    <style>
+      a, button, input, select, h1, h2, h3, h4, h5, * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          border: none;
+          text-decoration: none;
+          background: none;
+          -webkit-font-smoothing: antialiased;
+      }
+      menu, ol, ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+      }
+      th:nth-child(1), td:nth-child(1) { width: 10%; }  
+      th:nth-child(2), td:nth-child(2) { width: 48%; } 
+      th:nth-child(3), td:nth-child(3) { width: 22%; } 
+      th:nth-child(4), td:nth-child(4) { width: 15%; }  
+    </style>
+</head>
+<body>
+  <div class="div">
+    <div class="div2">
+      <div class="div3">
+        <div class="div4">
+          <div class="boardname">DASHBOARD</div>
+          <div class="div5">
+            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
+            <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
+            <div class="item-4 active"><div class="div8"><a href="/legislation_notice">입법예고</a></div></div>
+            <div class="item-5"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
+            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="left-section">
+        <div class="rectangle-1244"></div>
+        <h2 class="page-title">종료된 입법예고</h2>
+        <div class="status-buttons">
+          <a href="/legislation_notice_ongoing" class="btn {% if request.url.path == '/legislation_notice_ongoing' %}active{% endif %}">진행중</a>
+          <a href="/legislation_notice_ended" class="btn {% if request.url.path == '/legislation_notice_ended' %}active{% endif %}">종료</a>
+        </div>
+      </div>
+
+      <div class="breadcrumb">
+        <div class="home-icon"></div>
+        <span><strong> > 입법예고 > 종료된 입법예고</strong></span>
+      </div>
+    </div>
+
+    <div class="line-13"></div>
+
+    <div class="div12">
+      <div class="div13">
+        총 <strong>{{ total_count }}건</strong> ({{ page }} / {{ (total_count / size)|round(0, 'ceil')|int }} 페이지)
+      </div>
+      <form method="get" action="/legislation_notice_ended" class="search-form">
+        <input class="search-input" type="text" name="query" placeholder="법안명 또는 제안자 검색" value="{{ query }}">
+
+        <select name="committee" class="filter-select">
+          <option value="">상임위 전체</option>
+          {% set committees = [
+              '국회운영위원회', '법제사법위원회', '정무위원회', '기획재정위원회', '교육위원회',
+              '과학기술정보방송통신위원회', '외교통일위원회', '국방위원회', '행정안전위원회', '문화체육관광위원회',
+              '농림축산식품해양수산위원회', '산업통상자원중소벤처기업위원회', '보건복지위원회',
+              '환경노동위원회', '국토교통위원회', '정보위원회', '여성가족위원회', '예산결산특별위원회'
+          ] %}
+          {% for c in committees %}
+            <option value="{{ c }}" {% if committee == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+            <option value="기타" {% if committee == '기타' %}selected{% endif %}>기타</option>
+
+        </select>
+
+        <input type="hidden" name="page" value="1">
+        <input type="hidden" name="size" value="{{ size }}">
+        <button type="submit" class="search-button"></button>
+      </form>
+    </div>
+
+    <div class="card">
+      <table>
+          <thead>
+              <tr>
+                  <th>마감일</th>
+                  <th>법안명</th>
+                  <th>소관위원회</th>
+                  <th>제안자</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% if ended_notices %}
+                  {% for notice in ended_notices %}
+                  <tr>
+                      <td>{{ notice.NOTI_ED_DT }}</td>
+                      <td><a href="/legislation_ended/{{ notice.BILL_ID }}">{{ notice.BILL_NAME }}</a></td>
+                      <td>{{ notice.CURR_COMMITTEE }}</td>
+                      <td>{{ notice.PROPOSER }}</td>
+                  </tr>
+                  {% endfor %}
+              {% else %}
+                  <tr>
+                      <td colspan="5" style="text-align:center;">데이터가 없습니다.</td>
+                  </tr>
+              {% endif %}
+          </tbody>
+      </table>
+
+      <div class="pagination">
+        {# 처음 페이지 버튼 #}
+        {% if page > 1 %}
+          <a class="page-arrow first" href="?page=1&size={{ size }}&query={{ query }}&committee={{ committee }}"></a>
+        {% else %}
+          <span class="page-arrow first disabled"></span>
+        {% endif %}
+
+        {# 이전 페이지 버튼 #}
+        {% if page > 1 %}
+          <a class="page-arrow prev" href="?page={{ page - 1 }}&size={{ size }}&query={{ query }}&committee={{ committee }}"></a>
+        {% else %}
+          <span class="page-arrow prev disabled"></span>
+        {% endif %}
+
+        {# 페이지 숫자 리스트 #}
+        {% for p in range(start_page, end_page + 1) %}
+          {% if p == page %}
+            <span class="page-number active">{{ p }}</span>
+          {% else %}
+            <a class="page-number" href="?page={{ p }}&size={{ size }}&query={{ query }}&committee={{ committee }}">{{ p }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {# 다음 페이지 버튼 #}
+        {% if page < total_pages %}
+          <a class="page-arrow next" href="?page={{ page + 1 }}&size={{ size }}&query={{ query }}&committee={{ committee }}"></a>
+        {% else %}
+          <span class="page-arrow next disabled"></span>
+        {% endif %}
+
+        {# 끝 페이지 버튼 #}
+        {% if page < total_pages %}
+          <a class="page-arrow last" href="?page={{ total_pages }}&size={{ size }}&query={{ query }}&committee={{ committee }}"></a>
+        {% else %}
+          <span class="page-arrow last disabled"></span>
+        {% endif %}
+      </div>
+    </div>
+</body>
+</html>

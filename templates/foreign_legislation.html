@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>국외 입법정보</title>
+  <link rel="stylesheet" href="/static/css/list.css" />
+  <style>
+    a, button, input, select, h1, h2, h3, h4, h5, * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+      text-decoration: none;
+      background: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    menu, ol, ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    .airplane {
+      width: 60px;
+      height: 60px;
+      background: url('/static/svg/frame-1740.svg') no-repeat center;
+      background-size: 60px 60px;
+      border: none;
+    }
+    .dual-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+      width: 90%;
+      margin: 0 auto;
+      margin-top:20px;
+    }
+     .card {
+      width: 100%;
+      overflow-x: auto;
+      margin:0;
+      padding-bottom:40px;
+      padding-top:10px;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+    }
+    .status-buttons{
+        margin-left:3px;
+        margin-bottom:10px;
+    }
+    .status-buttons .btn {
+        padding: 4px 16px;
+        font-size: 24px;
+        min-width: 170px;
+        text-align: center;
+        background-color: #ffffff;
+        border-style: solid;
+        border-color:#E0E0E0;
+    }
+    th,td{
+      padding : 4px 13px;
+    }
+    .pagination{
+      margin-top:10px;
+    }
+    th:nth-child(1), td:nth-child(1) { width: 15%; } 
+    th:nth-child(2), td:nth-child(2) { width: 73%; } 
+    th:nth-child(3), td:nth-child(3) { width: 12%; } 
+  </style>
+</head>
+<body>
+  <div class="div">
+    <div class="div2">
+      <div class="div3">
+        <div class="div4">
+          <div class="boardname">DASHBOARD</div>
+          <div class="div5">
+            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
+            <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
+            <div class="item-4"><div class="div8"><a href="/legislation_notice">입법예고</a></div></div>
+            <div class="item-5 active"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
+            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="left-section">
+        <div class="rectangle-1244"></div>
+        <h2 class="page-title">국외 입법정보</h2>
+        <div class="airplane"></div>
+        <div style="color:#666666;">
+          주요 국가의 입법 동향과 법제사례를<br>한눈에 확인할 수 있습니다.
+        </div>
+      </div>
+
+      <div class="breadcrumb">
+        <div class="home-icon"></div>
+        <span><strong> > 국외 입법정보 </strong></span>
+      </div>
+    </div>
+    <div class="line-13"></div>
+
+    <div class="dual-container">
+      <!-- 좌: 입법동향 -->
+      <div class="notice-box">
+        <div class="status-buttons">
+          <a href="/legislative_trends" class="btn">입법동향</a>
+        </div>
+        <div class="card">
+          <div>총 <strong>{{ total_count_trend }}건</strong> ({{ page_trend }} / {{ total_pages_trend }})</div>
+          <table>
+            <thead>
+              <tr>
+                <th>공포일</th>
+                <th>제목</th>
+                <th>국가</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for trend in trends %}
+              <tr>
+                <td>{{ trend.PROCL_DATE }}</td>
+                <td><a href="/legislative-trends/{{ trend.CN }}">{{ trend.TITLE }}</a></td> 
+                <td>{{ trend.NATION_NAME }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="pagination">
+            {% if page_trend > 1 %}
+              <a class="page-arrow prev" href="?page_trend={{ page_trend - 1 }}&page_example={{ page_example }}"></a>
+            {% endif %}
+            {% for p in range(start_trend, end_trend + 1) %}
+              {% if p == page_trend %}
+                <span class="page-number active">{{ p }}</span>
+              {% else %}
+                <a class="page-number" href="?page_trend={{ p }}&page_example={{ page_example }}">{{ p }}</a>
+              {% endif %}
+            {% endfor %}
+            {% if page_trend < total_pages_trend %}
+              <a class="page-arrow next" href="?page_trend={{ page_trend + 1 }}&page_example={{ page_example }}"></a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- 우: 입법례 -->
+      <div class="notice-box">
+        <div class="status-buttons">
+          <a href="/legislative_examples" class="btn">입법례</a>
+        </div>
+        <div class="card">
+          <div>총 <strong>{{ total_count_example }}건</strong> ({{ page_example }} / {{ total_pages_example }})</div>
+          <table>
+            <thead>
+              <tr>
+                <th>작성일</th>
+                <th>제목</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for example in examples %}
+              <tr>
+                <td>{{ example.ISSUE_DATE }}</td>
+                <td><a href="/foreign_example/{{ example.CN }}">{{ example.TITLE }}</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="pagination">
+            {% if page_example > 1 %}
+              <a class="page-arrow prev" href="?page_trend={{ page_trend }}&page_example={{ page_example - 1 }}"></a>
+            {% endif %}
+            {% for p in range(start_example, end_example + 1) %}
+              {% if p == page_example %}
+                <span class="page-number active">{{ p }}</span>
+              {% else %}
+                <a class="page-number" href="?page_trend={{ page_trend }}&page_example={{ p }}">{{ p }}</a>
+              {% endif %}
+            {% endfor %}
+            {% if page_example < total_pages_example %}
+              <a class="page-arrow next" href="?page_trend={{ page_trend }}&page_example={{ page_example + 1 }}"></a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

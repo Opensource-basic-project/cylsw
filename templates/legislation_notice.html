@@ -19,6 +19,75 @@
       margin: 0;
       padding: 0;
     }
+    .div5 {
+          background: #e6e7ea;
+          border-radius: 10px;
+          padding: 4px 17px;
+          display: flex;
+          gap: 10px;
+          justify-content: center;
+          align-items: center;
+          height: 42px;
+          width: 55%;
+          margin: 0 auto;
+          position: relative;
+        }
+
+        /* 각 메뉴 항목 동일한 비율로 */
+        .item {
+          flex-grow: 1;           /* ✅ 비율 균등 분배 */
+          flex-basis: 0;          /* ✅ 초기 너비 0으로 설정 */
+          min-width: 0;           /* ✅ 넘침 방지 */
+          position: relative;
+          padding: 0 12px;
+          height: 31px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #e6e7ea;
+          border-radius: 10px;
+          font-family: "Inter-Bold", sans-serif;
+          font-size: 18px;
+          font-weight: 700;
+          color: #000;
+          white-space: nowrap;
+          cursor: pointer;
+        }
+
+        /* 드롭다운 메뉴 */
+        .dropdown-menu {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background: #fff;
+          border: 1px solid #ccc;
+          padding: 6px 0;
+          list-style: none;
+          z-index: 1000;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          min-width: 100%;
+        }
+
+        .dropdown-menu li {
+          padding: 6px 16px;
+        }
+
+        .dropdown-menu li a {
+          text-decoration: none;
+          color: #333;
+          font-size: 14px;
+          display: block;
+        }
+
+        .dropdown:hover .dropdown-menu {
+          display: block;
+        }
+
+        /* 활성 메뉴 표시용 */
+        .active {
+          background: #fff;
+        }
     .bell {
         width: 50px;
         height: 50px;
@@ -78,11 +147,26 @@
         <div class="div4">
           <div class="boardname">DASHBOARD</div>
           <div class="div5">
-            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
-            <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
-            <div class="item-4 active"><div class="div8"><a href="/legislation_notice">입법예고</div></div>
-            <div class="item-5"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
-            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+            <div class="item"><a href="/dashboard">메인 대시보드</a></div>
+            <div class="item"><a href="/plenary">본회의 법안정보</a></div>
+
+            <div class="item dropdown active">
+              <a href="/legislation_notice">입법예고</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislation_notice_ongoing">진행 중 입법예고</a></li>
+                <li><a href="/legislation_notice_ended">종료된 입법예고</a></li>
+              </ul>
+            </div>
+
+            <div class="item dropdown">
+              <a href="/foreign_legislation">국외 입법정보</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislative_trends">주요국 입법동향</a></li>
+                <li><a href="/legislative_examples">주요국 입법례</a></li>
+              </ul>
+            </div>
+
+            <div class="item"><a href="/public_opinion">법안 여론분석</a></div>
           </div>
         </div>
       </div>

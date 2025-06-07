@@ -164,6 +164,77 @@ a {
   padding: 5px;
   background: white;
 }
+.div5 {
+  background: #e6e7ea;
+  border-radius: 10px;
+  padding: 4px 17px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  height: 42px;
+  width: 55%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* 각 메뉴 항목 동일한 비율로 */
+.item {
+  flex-grow: 1;           /* ✅ 비율 균등 분배 */
+  flex-basis: 0;          /* ✅ 초기 너비 0으로 설정 */
+  min-width: 0;           /* ✅ 넘침 방지 */
+  position: relative;
+  padding: 0 12px;
+  height: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6e7ea;
+  border-radius: 10px;
+  font-family: "Inter-Bold", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* 드롭다운 메뉴 */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 0;
+  list-style: none;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 100%;
+}
+
+.dropdown-menu li {
+  padding: 6px 16px;
+}
+
+.dropdown-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  display: block;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* 활성 메뉴 표시용 */
+.active {
+  background: #fff;
+}
+
+
 .div11 {
   background: #e6e7ea;
   border-radius: 10px;

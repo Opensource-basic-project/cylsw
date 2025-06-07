@@ -5,6 +5,7 @@ from db import SessionLocal, PlenaryBill
 import requests
 from bs4 import BeautifulSoup
 import json
+import re
 from config import OPEN_ASSEMBLY_API_KEY
 
 router = APIRouter()
@@ -59,14 +60,23 @@ def crawl_proposal_detail(link_url: str):
     return "제안이유 및 주요내용을 불러올 수 없습니다."
 
 def find_matched_images(bill_name: str):
-    matched = []
+    bill_name_lower = bill_name.lower()
+    best_match = None
+    earliest_pos = len(bill_name_lower) + 1  # 아주 큰 값으로 초기화
+
     for topic, config in keyword_map.items():
-        keywords = config.get("keywords", [])
-        for keyword in keywords:
-            if keyword in bill_name:
-                matched.extend(config.get("images", []))
-                break  # 같은 주제에서 하나라도 일치하면 중복 방지
-    return matched
+        for keyword in config.get("keywords", []):
+            keyword_lower = keyword.lower()
+            index = bill_name_lower.find(keyword_lower)
+            if index != -1 and index < earliest_pos:
+                earliest_pos = index
+                best_match = topic
+                break  # 이 주제는 매칭된 상태이므로 다음 주제로 넘어감
+
+    if best_match:
+        return keyword_map[best_match].get("images", [])
+    return []
+
 
 
 @router.get("/plenary/{bill_id}")

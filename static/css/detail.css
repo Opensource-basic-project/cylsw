@@ -382,6 +382,9 @@ th:nth-child(5), td:nth-child(5) { width: 15%; }
   display: flex;
   gap: 30px;
   margin-top: 20px;
+  flex-wrap: wrap; /* ✅ 넘치면 줄바꿈 */
+  max-width: 100%;  /* ✅ 부모 너비 안에서 제한 */
+  overflow: hidden; /* ✅ 넘침 방지 */
 }
 
 .stat-main {
@@ -411,6 +414,12 @@ th:nth-child(5), td:nth-child(5) { width: 15%; }
 .stat-main-image {
   width: 600px;
   width:100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+.image-box img {
+  max-width: 100%;   /* ✅ 부모 너비를 넘지 않게 */
   height: auto;
   border-radius: 6px;
   border: 1px solid #ccc;

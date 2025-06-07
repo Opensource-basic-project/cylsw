@@ -29,18 +29,37 @@
 </head>
 <body>
   <div class="div">
+    <div class="div">
     <div class="div2">
       <div class="div3">
         <div class="div4">
           <div class="boardname">DASHBOARD</div>
           <div class="div5">
-            <div class="item-1"><div class="div6"><a href="/dashboard">메인 대시보드</a></div></div>
-            <div class="item-2"><div class="div7"><a href="/plenary">본회의 법안정보</a></div></div>
-            <div class="item-4 active"><div class="div8"><a href="/legislation_notice">입법예고</div></div>
-            <div class="item-5"><div class="div9"><a href="/foreign_legislation">국외 입법정보</a></div></div>
-            <div class="item-6"><div class="div10"><a href="/public_opinion">법안 여론분석</a></div></div>
+            <div class="item"><a href="/dashboard">메인 대시보드</a></div>
+            <div class="item"><a href="/plenary">본회의 법안정보</a></div>
+
+            <div class="item dropdown active">
+              <a href="/legislation_notice">입법예고</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislation_notice_ongoing">진행 중 입법예고</a></li>
+                <li><a href="/legislation_notice_ended">종료된 입법예고</a></li>
+              </ul>
+            </div>
+
+            <div class="item dropdown">
+              <a href="/foreign_legislation">국외 입법정보</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislative_trends">주요국 입법동향</a></li>
+                <li><a href="/legislative_examples">주요국 입법례</a></li>
+              </ul>
+            </div>
+
+            <div class="item"><a href="/public_opinion">법안 여론분석</a></div>
           </div>
-          <!--
+        </div>
+      </div>
+    </div>
+    <!--
           <div class="div11">
             <form method="get" action="/legislation_notice_ongoing" style="display:flex; align-items:center;">
               <input class="search-input" type="text" name="query" placeholder="검색어를 입력하세요" value="{{ query }}">
@@ -50,9 +69,6 @@
             </form>
           </div>
           -->
-        </div>
-      </div>
-    </div>
     <div class="container">
         <!-- 왼쪽 영역: 세로바, 제목, 버튼 -->
         <div class="left-section">

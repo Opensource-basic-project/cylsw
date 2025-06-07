@@ -27,7 +27,7 @@ def crawl_example_description(link_url: str):
         print(f"[크롤링 오류] {link_url}: {e}")
         return "상세 설명을 불러올 수 없습니다."
 
-@router.get("/legislative-example/{cn}")
+@router.get("/legislative_example/{cn}")
 def foreign_law_example_detail(request: Request, cn: str, db: Session = Depends(get_db)):
     law = db.query(ForeignLawExample).filter(ForeignLawExample.cn == cn).first()
     if not law:

@@ -88,6 +88,33 @@
         .active {
           background: #fff;
         }
+        .bill-review-table {
+          width: 60%;
+          margin: 0 0;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+
+        .bill-review-table th {
+          background-color: #e6e7ea;
+          padding: 3px;
+          text-align: center;
+          font-weight: 600;
+          font-size: 16px;
+          border: 1px solid #ddd;
+        }
+
+        .bill-review-table td {
+          background-color: #fff;
+          padding: 3px;
+          text-align: center;
+          font-size: 15px;
+          border: 1px solid #ddd;
+          word-break: break-word;
+        }
+        th:nth-child(1), td:nth-child(1) { width: 25%; }  
+        th:nth-child(2), td:nth-child(2) { width: 50%; }  
+        th:nth-child(3), td:nth-child(3) { width: 25%; }  
     </style>
 </head>
 <body>
@@ -129,7 +156,7 @@
 
     <div class="breadcrumb">
       <div class="home-icon"></div>
-      <span><strong> > 국외 입법정보 > 주요국 입법례</strong></span>
+      <span><strong> > 국외 입법정보 > 주요국 입법례 > 상세</strong></span>
     </div>
   </div>
 
@@ -137,14 +164,33 @@
 
   <div class="detail">
     <h1>{{ law.title }}</h1>
-    <p><strong>발간일:</strong> {{ law.issue_date }}</p>
-    <p><strong>관련법률:</strong> {{ law.rel_law }}</p>
-    <p><strong>상임위원회:</strong> {{ law.asc_name }}</p>
+    <table class="bill-review-table">
+      <colgroup>
+        <col style="width:25%;">
+        <col style="width:50%;">
+        <col style="width:25%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>발간일</th>
+          <th>관련법률</th>
+          <th>상임위원회</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ law.issue_date }}</td>
+          <td>{{ law.rel_law }}</td>
+          <td>{{ law.asc_name }}</td>
+        </tr>
+      </tbody>
+    </table>
+
 
     <h2>상세 내용</h2>
     <div class="proposal-text" style="white-space:pre-wrap;">{{ description | safe }}</div>
 
-    <p><a href="{{ law.detail_url }}" target="_blank">원문 페이지 바로가기</a></p>
+    <!--<p><a href="{{ law.detail_url }}" target="_blank">원문 페이지 바로가기</a></p>-->
   </div>
 </body>
 </html>

@@ -51,6 +51,7 @@ def save_notices_to_db(db: Session, notices: list):
             link_url=notice.get("LINK_URL"),
             curr_committee=notice.get("CURR_COMMITTEE"),
             announce_dt=notice.get("ANNOUNCE_DT"),
+            bill_no = notice.get("BILL_NO"),
         )
         db.add(new_notice)
     db.commit()
@@ -73,6 +74,7 @@ def save_ended_notices_to_db(db: Session, notices: list):
             link_url=notice.get("LINK_URL"),
             curr_committee=notice.get("CURR_COMMITTEE"),
             announce_dt=notice.get("ANNOUNCE_DT"),
+            bill_no = notice.get("BILL_NO"),
         )
         db.add(new_notice)
     db.commit()

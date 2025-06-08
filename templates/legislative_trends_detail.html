@@ -88,6 +88,34 @@
         .active {
           background: #fff;
         }
+        .bill-review-table {
+          width: 70%;
+          margin: 0 0;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+
+        .bill-review-table th {
+          background-color: #e6e7ea;
+          padding: 3px;
+          text-align: center;
+          font-weight: 600;
+          font-size: 16px;
+          border: 1px solid #ddd;
+        }
+
+        .bill-review-table td {
+          background-color: #fff;
+          padding: 3px;
+          text-align: center;
+          font-size: 15px;
+          border: 1px solid #ddd;
+          word-break: break-word;
+        }
+        th:nth-child(1), td:nth-child(1) { width: 25%; }  
+        th:nth-child(2), td:nth-child(2) { width: 25%; }  
+        th:nth-child(3), td:nth-child(3) { width: 25%; }  
+        th:nth-child(4), td:nth-child(4) { width: 25%; }
     </style>
 </head>
 <body>
@@ -129,22 +157,43 @@
 
       <div class="breadcrumb">
         <div class="home-icon"></div>
-        <span><strong> > 국외 입법정보 > 주요국 입법동향</strong></span>
+        <span><strong> > 국외 입법정보 > 주요국 입법동향 > 상세</strong></span>
       </div>
     </div>
     <div class="line-13"></div>
 
     <div class="detail">
         <h1>{{ law.title }}</h1>
-        <p><strong>국가:</strong> {{ law.nation_name }}</p>
-        <p><strong>공포일:</strong> {{ law.procl_date }}</p>
-        <p><strong>상임위:</strong> {{ law.asc_info }}</p>
-        <p><strong>원법률명:</strong> {{ law.org_law_name }}</p>
+        
+        <table class="bill-review-table">
+          <colgroup>
+            <col style="width:10%;">
+            <col style="width:15%;">
+            <col style="width:22%;">
+            <col style="width:53%;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>국가</th>
+              <th>공포일</th>
+              <th>상임위</th>
+              <th>원법률명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ law.nation_name }}</td>
+              <td>{{ law.procl_date }}</td>
+              <td>{{ law.asc_info }}</td>
+              <td>{{ law.org_law_name }}</td>
+            </tr>
+          </tbody>
+        </table>
 
         <h2>상세 내용</h2>
         <div class="proposal-text" style="white-space:pre-wrap;">{{ description | safe }}</div>
 
-        <p><a href="{{ law.detail_url }}" target="_blank">원문 페이지 바로가기</a></p>
+        <!--<p><a href="{{ law.detail_url }}" target="_blank">원문 페이지 바로가기</a></p>-->
     </div>
 </body>
 </html>

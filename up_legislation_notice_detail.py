@@ -13,39 +13,65 @@ def crawl_proposal_detail(link_url: str):
         response = requests.get(link_url, headers=HEADERS, timeout=10)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
+
+        # 제안이유 및 주요내용
+        proposal_text = None
         for item in soup.find_all("div", class_="item"):
             h4 = item.find("h4")
             if h4 and "제안이유 및 주요내용" in h4.text:
                 desc_div = item.find("div", class_="desc")
                 if desc_div:
-                    return re.sub(r'^[ \t]+', '', desc_div.get_text(separator="\n").strip(), flags=re.MULTILINE)
+                    proposal_text = re.sub(r'^[ \t]+', '', desc_div.get_text(separator="\n").strip(), flags=re.MULTILINE)
+                    break
+
+        notice_period = None
+        tbody = soup.find("tbody")
+        rows = tbody.find_all("tr") if tbody else []
+
+        if rows:
+            tds = rows[0].find_all("td")
+            if len(tds) >= 6:
+                notice_period = tds[5].get_text(strip=True)  # ❌ 7번째 (index 6)를 사용
+
+        return proposal_text, notice_period
+
     except Exception as e:
         print(f"[에러] {link_url} 처리 중 오류: {e}")
-    return None
+    return None, None
 
 def update_table_proposal_text(table_class, label: str):
     db = SessionLocal()
     try:
-        targets = db.query(table_class).filter(
-            (table_class.proposal_text == None) |
-            (table_class.proposal_text == "")
-        ).all()
+        targets = db.query(table_class).filter(table_class.link_url != None).all()
 
         for bill in targets:
-            if bill.link_url:
-                print(f"[{label}] 📄 {bill.bill_name} - 크롤링 시도 중...")
-                detail = crawl_proposal_detail(bill.link_url)
-                if not detail:
-                    print(f"[{label}] ❌ 1차 실패, 재시도 중...")
-                    time.sleep(1)
-                    detail = crawl_proposal_detail(bill.link_url)
-                if detail:
-                    bill.proposal_text = detail
-                else:
-                    print(f"[{label}] 🚫 크롤링 실패: {bill.link_url}")
-                time.sleep(1)  # 요청 간 딜레이
+            print(f"[{label}] 📄 {bill.bill_name} - 크롤링 시도 중...")
+            detail, notice_period = crawl_proposal_detail(bill.link_url)
+
+            if not detail and not notice_period:
+                print(f"[{label}] 🚫 크롤링 실패: {bill.link_url}")
+                continue
+
+            changed = False
+
+            if detail and bill.proposal_text != detail:
+                bill.proposal_text = detail
+                changed = True
+
+            if notice_period and getattr(bill, "notice_period", None) != notice_period:
+                bill.notice_period = notice_period
+                changed = True
+
+            if changed:
+                print(f"[업데이트] ✏️ {bill.bill_name} - 변경 사항 반영됨")
+            else:
+                print(f"[유지] ⏩ {bill.bill_name} - 내용 동일, 덮어쓰기 생략")
+
+            time.sleep(1)
+
         db.commit()
-        print(f"[{label}] ✅ 제안이유 및 주요내용 DB 갱신 완료")
+        print(f"[{label}] ✅ DB 갱신 완료")
+
     finally:
         db.close()
 

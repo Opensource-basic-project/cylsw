@@ -89,6 +89,34 @@
         .active {
           background: #fff;
         }
+        .bill-review-table {
+          width: 60%;
+          margin: 0 0;
+          border-collapse: collapse;
+          table-layout: fixed;
+        }
+
+        .bill-review-table th {
+          background-color: #e6e7ea;
+          padding: 3px;
+          text-align: center;
+          font-weight: 600;
+          font-size: 16px;
+          border: 1px solid #ddd;
+        }
+
+        .bill-review-table td {
+          background-color: #fff;
+          padding: 3px;
+          text-align: center;
+          font-size: 15px;
+          border: 1px solid #ddd;
+          word-break: break-word;
+        }
+        th:nth-child(1), td:nth-child(1) { width: 25%; }  
+        th:nth-child(2), td:nth-child(2) { width: 25%; }  
+        th:nth-child(3), td:nth-child(3) { width: 25%; }  
+        th:nth-child(4), td:nth-child(4) { width: 25%; }
       /* 추가 필요 시 적절히 작성 */
     </style>
 </head>
@@ -131,7 +159,7 @@
 
       <div class="breadcrumb">
         <div class="home-icon"></div>
-        <span><strong> > 입법예고 > 진행 중 입법예고</strong></span>
+        <span><strong> > 입법예고 > 진행 중 입법예고 > 상세</strong></span>
       </div>
     </div>
 
@@ -139,11 +167,29 @@
 
     <div class="detail">
         <h1>{{ bill.BILL_NAME }}</h1>
-        <p>발의자: {{ bill.PROPOSER }}</p>
+          <table class="bill-review-table">
+            <thead>
+              <tr>
+                <th>법안번호</th>
+                <th>제안자</th>
+                <th>소관위원회</th>
+                <th>입법예고기간</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ bill.BILL_NO }}</td>
+                <td>{{ bill.PROPOSER }}</td>
+                <td>{{ bill.CURR_COMMITTEE }}</td>
+                <td>{{ bill.NOTICE_PERIOD }}</td>
+              </tr>
+            </tbody>
+          </table>
+
         <h2>제안 이유 및 주요 내용</h2>
         <div class="proposal-text">{{ proposal_text }}</div>
 
-        <p><a href="{{ link_url }}" target="_blank">국회 상세 페이지 바로가기</a></p>
+        <!--<p><a href="{{ link_url }}" target="_blank">국회 상세 페이지 바로가기</a></p>-->
     </div>
 </body>
 </html>

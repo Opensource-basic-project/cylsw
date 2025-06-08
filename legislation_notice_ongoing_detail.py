@@ -67,9 +67,11 @@ def legislation_ongoing_detail(request: Request, bill_id: str, db: Session = Dep
             "bill": {
                 "BILL_ID": bill.bill_id,
                 "BILL_NAME": bill.bill_name,
+                "BILL_NO": bill.bill_no,
                 "PROPOSER": bill.proposer,
                 "CURR_COMMITTEE": bill.curr_committee,
                 "ANNOUNCE_DT": bill.announce_dt,
+                "NOTICE_PERIOD": bill.notice_period,
             },
             "proposal_text": bill.proposal_text or "제안이유 및 주요내용을 등록 중입니다.",
             "link_url": bill.link_url

@@ -448,9 +448,9 @@ td div, td span {
 }
 
 th:nth-child(1), td:nth-child(1) { width: 10%; }  /* 발의일 */
-th:nth-child(2), td:nth-child(2) { width: 47%; }  /* 법안명 */
+th:nth-child(2), td:nth-child(2) { width: 45%; }  /* 법안명 */
 th:nth-child(3), td:nth-child(3) { width: 20%; }  /* 상임위 */
-th:nth-child(4), td:nth-child(4) { width: 8%; }  /* 처리 결과 */
+th:nth-child(4), td:nth-child(4) { width: 10%; }  /* 처리 결과 */
 th:nth-child(5), td:nth-child(5) { width: 15%; }  /* 제안자 */
 /*페이지네이션*/
 .pagination {

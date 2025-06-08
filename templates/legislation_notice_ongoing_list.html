@@ -33,7 +33,7 @@
     <div class="div2">
       <div class="div3">
         <div class="div4">
-          <div class="boardname">DASHBOARD</div>
+          <div class="boardname"><a href="/dashboard">DASHBOARD</a></div>
           <div class="div5">
             <div class="item"><a href="/dashboard">메인 대시보드</a></div>
             <div class="item"><a href="/plenary">본회의 법안정보</a></div>
@@ -96,7 +96,7 @@
         <input class="search-input" type="text" name="query" placeholder="법안명 또는 제안자 검색" value="{{ query }}">
 
         <select name="committee" class="filter-select">
-          <option value="">상임위 전체</option>
+          <option value="">위원회 전체</option>
           {% set committees = [
               '국회운영위원회', '법제사법위원회', '정무위원회', '기획재정위원회', '교육위원회',
               '과학기술정보방송통신위원회', '외교통일위원회', '국방위원회', '행정안전위원회', '문화체육관광위원회',
@@ -122,7 +122,7 @@
               <tr>
                   <th>마감일</th>
                   <th>법안명</th>
-                  <th>소관위원회</th>
+                  <th>상임위원회</th>
                   <th>제안자</th>
               </tr>
           </thead>

@@ -26,7 +26,7 @@
     <div class="div2">
       <div class="div3">
         <div class="div4">
-          <div class="boardname">DASHBOARD</div>
+          <div class="boardname"><a href="/dashboard">DASHBOARD</a></div>
           <div class="div5">
             <div class="item"><a href="/dashboard">메인 대시보드</a></div>
             <div class="item"><a href="/plenary">본회의 법안정보</a></div>
@@ -76,7 +76,7 @@
         총 <strong>{{ total_count }}건</strong> ({{ page }} / {{ total_pages }} 페이지)
       </div>
       <form method="get" action="/legislative_trends" class="search-form">
-        <input class="search-input" type="text" name="keyword" placeholder="제목 또는 위원회 검색" value="{{ keyword }}">
+        <input class="search-input" type="text" name="keyword" placeholder="제목 검색" value="{{ keyword }}">
 
         <select name="committee" class="filter-select">
           <option value="">상임위 전체</option>

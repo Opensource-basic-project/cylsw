@@ -1,43 +1,58 @@
-from fastapi import FastAPI, Request, Depends, Form
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI, Request, Depends, Form, Query
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.wsgi import WSGIMiddleware
-from fastapi.responses import RedirectResponse
-from fastapi.responses import HTMLResponse
 
-from dash_news_app import create_dash_app_news, create_dash_app_from_result # 후자는 데이터 받아서 결과 산출
-from sqlalchemy.orm import Session, sessionmaker
-from datetime import datetime
-from sqlalchemy import create_engine
+# 기능 파일 라우팅 
+from plenary_bills_list import router as plenary_router   
+from plenary_bills_detail import router as plenary_detail_router
+from legislation_notice_ongoing_list import router as notice_list_router
+from legislation_notice_ended_list import router as notice_list_ended_router
+from legislation_notice_ongoing_detail import router as notice_detail_router
+from legislation_notice_ended_detail import router as notice_detail_ended_router
+from legislative_trends_list import router as trends_router
+from legislative_trends_detail import router as trends_detail_router
+from legislative_example_list import router as example_list_router
+from legislative_example_detail import router as example_detail_router 
+from legislation_notice import router as legislation_notice_router
+from foreign_legislation import router as foreign_legislation_router
+from maindashboard import router as main_dashboard_router
+
+# Dash 앱
+from dash_news_app import create_dash_app_news, create_dash_app_from_result
+from Cdash_app import create_Cdash_app
+from dash_app import create_dash_app
+
+# DB 관련
+from db import init_db
+from dbmanage import init_db
+from dbmanage_CNT import init_CNTdb
 from dbmanage_News import SessionLocal, BillNews
 from dbmanage_NewsReact import NewsSentiment, NewsComment
+from dbmanage_ranking import TrendingBill
+
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import create_engine
+
+# 뉴스 크롤링 및 분석
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from GetNewslink import search_news_unique
 from GetNewsReact import load_comments, analyze_sentiment
-from types import SimpleNamespace
 from insert_NewsScript import get_article_body
 
-
-from Cdash_app import create_Cdash_app
-from dash_app import create_dash_app
-
-# mainpage DB 관리 모듈 
-from dbmanage import init_db
-from dbmanage_CNT import init_CNTdb
-
-# 부속 기능 블럭 모듈
+# 메인 기능 블럭
 from main_load import get_latest_laws, get_latest_news
-from fastapi import Query
-from fastapi.responses import JSONResponse
-from dbmanage_ranking import TrendingBill
 
+# 기타
+from types import SimpleNamespace
+from datetime import datetime
 from pathlib import Path
 import math
 import os
 
-
-from pathlib import Path
+init_db()
 
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE_URL = f"sqlite:///{BASE_DIR / 'bills.db'}"
@@ -88,6 +103,8 @@ app.mount("/dash_main/assets", StaticFiles(directory=str(ASSETS_DIR)), name="ass
 templates_main = Jinja2Templates(directory="dash_main/html")
 
 
+
+
 def truncate(text, limit=10):
     return text[:limit] + "..." if len(text) > limit else text
 
@@ -114,6 +131,32 @@ async def read_index(request: Request):
         "latest_news": latest_news,
         "top_5_bills": top_5_bills
     })
+
+
+
+app.include_router(plenary_router)
+app.include_router(plenary_detail_router)
+app.include_router(notice_list_router)
+app.include_router(notice_list_ended_router)
+app.include_router(notice_detail_router)
+app.include_router(notice_detail_ended_router)
+app.include_router(trends_router)
+app.include_router(trends_detail_router)
+app.include_router(example_list_router)
+app.include_router(example_detail_router) 
+app.include_router(legislation_notice_router)
+app.include_router(foreign_legislation_router)
+app.include_router(main_dashboard_router)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+@app.get("/")
+async def redirect_to_dashboard():
+    return RedirectResponse(url="/dashboard")
+#가상환경 권환 : Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+#가상환경 활성화 : .\venv\Scripts\Activate.ps1
+#서버 실행 : uvicorn main:app --reload
+
+
 
 
 

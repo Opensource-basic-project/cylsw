@@ -208,7 +208,7 @@
               {% for trend in trends %}
               <tr>
                 <td>{{ trend.PROCL_DATE }}</td>
-                <td><a href="/legislative-trends/{{ trend.CN }}">{{ trend.TITLE }}</a></td> 
+                <td><a href="/legislative_trends/{{ trend.CN }}">{{ trend.TITLE }}</a></td> 
                 <td>{{ trend.NATION_NAME }}</td>
               </tr>
               {% endfor %}
@@ -250,7 +250,7 @@
               {% for example in examples %}
               <tr>
                 <td>{{ example.ISSUE_DATE }}</td>
-                <td><a href="/foreign_example/{{ example.CN }}">{{ example.TITLE }}</a></td>
+                <td><a href="/legislative_example/{{ example.CN }}">{{ example.TITLE }}</a></td>
               </tr>
               {% endfor %}
             </tbody>

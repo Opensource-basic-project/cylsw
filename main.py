@@ -393,6 +393,8 @@ def get_index_news(request: Request, page: int = 1, db: Session = Depends(get_db
     if (end_page - start_page) < (PAGE_DISPLAY_COUNT - 1):
         start_page = max(1, end_page - PAGE_DISPLAY_COUNT + 1)
 
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+    
     return templates.TemplateResponse("index_news.html", {
         "request": request,
         "title": news_sentiment.title,

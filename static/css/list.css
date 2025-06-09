@@ -337,6 +337,12 @@ a {
   background-repeat: no-repeat;
   background-position: center;
 }
+.ex{
+  font-size:15px;
+  color:#666666;
+  margin-left:120px;
+  margin-top:7px;
+}
 .line-13 {
   max-width: calc(100% - 70px);
   margin-top: 20px;
@@ -428,7 +434,7 @@ td:first-child {
 /* 마지막 셀: 오른쪽 선 보이게 */
 th:last-child,
 td:last-child {
-    border-right: 1px solid #ccc;
+    border-right: 3px solid #ccc;
     border-radius: 0 10px 10px 0;
 }
 

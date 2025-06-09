@@ -476,13 +476,15 @@ app = FastAPI()
 
 # 디렉토리 설정
 BASE_DIR = Path(__file__).resolve().parent
-HTML_DIR = BASE_DIR / "dash_main" / "html"
+DASH_MAIN_HTML_DIR = BASE_DIR / "dash_main" / "html"
+DASH_NEWS_HTML_DIR = BASE_DIR / "dash_news" / "html"
 ASSETS_DIR = BASE_DIR / "dash_main" / "assets"
 DATABASE_URL = f"sqlite:///{BASE_DIR / 'bills.db'}"
 
 # 정적 파일 마운트
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/dash_main/html", StaticFiles(directory=str(HTML_DIR)), name="html")
+app.mount("/static", StaticFiles(directory="static"), name="static")  # 기존 static 복원
+app.mount("/dash_main/html", StaticFiles(directory=str(DASH_MAIN_HTML_DIR)), name="dash_main_html")
+app.mount("/dash_news/html", StaticFiles(directory=str(DASH_NEWS_HTML_DIR)), name="dash_news_html")
 app.mount("/dash_main/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
 # 템플릿 설정
@@ -517,7 +519,7 @@ app.include_router(example_list_router)
 app.include_router(example_detail_router)
 app.include_router(legislation_notice_router)
 app.include_router(foreign_legislation_router)
-app.include_router(main_dashboard_router)
+#app.include_router(main_dashboard_router)
 
 # DB 연결 함수
 def get_db():

@@ -6,6 +6,4 @@ requests
 beautifulsoup4
 python-multipart
 dash
-sentence_transformers
 numpy
-selenium

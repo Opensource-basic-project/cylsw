@@ -1,17 +1,9 @@
-from fastapi import FastAPI, Request, Depends, FormAdd commentMore actions
-from fastapi.templating import Jinja2Templates
 from fastapi import FastAPI, Request, Depends, Form, Query
-from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponseAdd commentMore actions
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.wsgi import WSGIMiddleware
-from fastapi.responses import RedirectResponse
-from fastapi.responses import HTMLResponse
 
-from dash_news_app import create_dash_app_news, create_dash_app_from_result # 후자는 데이터 받아서 결과 산출
-from sqlalchemy.orm import Session, sessionmaker
-from datetime import datetime
-from sqlalchemy import create_engine
 # 기능 파일 라우팅 
 from plenary_bills_list import router as plenary_router   
 from plenary_bills_detail import router as plenary_detail_router
@@ -28,7 +20,7 @@ from foreign_legislation import router as foreign_legislation_router
 from maindashboard import router as main_dashboard_router
 
 # Dash 앱
-from dash_news_app import create_dash_app_news, create_dash_app_from_result
+from dash_news_app import create_dash_app_news, create_dash_app_from_result, create_dash_app_from_result_in
 from Cdash_app import create_Cdash_app
 from dash_app import create_dash_app
 
@@ -48,23 +40,16 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from GetNewslink import search_news_unique
 from GetNewsReact import load_comments, analyze_sentiment
-from types import SimpleNamespace
 from insert_NewsScript import get_article_body
 
-
-from Cdash_app import create_Cdash_app
-from dash_app import create_dash_app
-
-# mainpage DB 관리 모듈 
-from dbmanage import init_db
-from dbmanage_CNT import init_CNTdb
-
-# 부속 기능 블럭 모듈
 # 메인 기능 블럭
-from main_load import get_latest_laws, get_latest_news
-from fastapi import Query
-from fastapi.responses import JSONResponse
-from dbmanage_ranking import TrendingBill
+from main_load import (
+    get_latest_laws, 
+    get_latest_news, 
+    get_plenary_info_main,
+    get_notice_info_main,
+    get_foreign_info_main
+    )
 
 # 기타
 from types import SimpleNamespace
@@ -73,25 +58,24 @@ from pathlib import Path
 import math
 import os
 
+init_db() # db 초기화
 
-from pathlib import Path
-init_db()
-
+# db 경로 지정
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE_URL = f"sqlite:///{BASE_DIR / 'bills.db'}"
 
-
 # SQLAlchemy 기본 설정
-#Base = declarative_base()
 engine = create_engine(DATABASE_URL, echo=False)
 app = FastAPI()
-templates = Jinja2Templates(directory="dash_news/html")
+templates = Jinja2Templates(directory="dash_news/html")         #뉴스 html 연결
+templates_main = Jinja2Templates(directory="dash_main/html")    #메인 html 연결
 
-
-# 시작시점에만.
 dash = create_dash_app_from_result()  # 초기 bill_id 없이
+# plotly 그래프들 mount
 app.mount("/dash_news_view", WSGIMiddleware(dash.server))
-
+app.mount("/dash_news_app_live", WSGIMiddleware(create_dash_app_from_result_in().server))
+app.mount("/dash/", WSGIMiddleware(create_dash_app().server))
+app.mount("/dash2/", WSGIMiddleware(create_Cdash_app().server))
 
 # DB 연결 함수
 def get_db():
@@ -103,27 +87,20 @@ def get_db():
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# 정적 파일 경로 mount (예: /static)
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "dash_news/html")), name="static")
+# 정적 파일 경로 mount (=> 병합후 경로수정 static => static_)
+app.mount("/static_", StaticFiles(directory=os.path.join(BASE_DIR, "dash_news/html")), name="static_")
 
-# Mount Dash apps
-app.mount("/dash/", WSGIMiddleware(create_dash_app().server))
-app.mount("/dash2/", WSGIMiddleware(create_Cdash_app().server))
 
-# 실제 파일 경로 (main.py가 dashboard-main 루트에 있을 경우)
 BASE_DIR = Path(__file__).resolve().parent
 HTML_DIR = BASE_DIR / "dash_main" / "html"
-
-# 정적 파일 서빙
 app.mount("/dash_main/html", StaticFiles(directory=str(HTML_DIR)), name="html")
 
 BASE_DIR_ = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR_ / "dash_main" / "assets"
-
 app.mount("/dash_main/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
 
-templates_main = Jinja2Templates(directory="dash_main/html")
+
 
 
 
@@ -147,12 +124,20 @@ async def read_index(request: Request):
     law_list = get_latest_laws(n=3)
     latest_news = get_latest_news()
     top_5_bills = get_top_5_bills()
+    plenary_main = get_plenary_info_main()
+    noticelaw = get_notice_info_main()
+    examples, trends = get_foreign_info_main()
+    
 
     return templates_main.TemplateResponse("index.html", {
         "request": request,
         "laws": law_list,
         "latest_news": latest_news,
-        "top_5_bills": top_5_bills
+        "top_5_bills": top_5_bills,
+        "plenary_mlist": plenary_main,
+        "noticelaw": noticelaw,
+        "examples" : examples,
+        "trends": trends,
     })
 
 
@@ -172,6 +157,7 @@ app.include_router(foreign_legislation_router)
 app.include_router(main_dashboard_router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get("/")
 async def redirect_to_dashboard():
     return RedirectResponse(url="/dashboard")
@@ -182,20 +168,21 @@ async def redirect_to_dashboard():
 
 
 
-
+# 여론분석 뉴스 검색어 처리 => 기능 비활성화 (selenium 접근 방지)
 @app.post("/analyze_news")
 def analyze_news(request: Request, title: str = Form(...), db: Session = Depends(get_db)):
     title = title.strip()
 
+    num = 1
 
-    if not title or not title.endswith(("법률안", "법안", "법")):
+    if num:
         return templates.TemplateResponse("index_news.html", {
             "request": request,
-            "error": "법안명을 정확히 입력하세요. 예: '청소년보호법'",
+            "error": "",
             "title": "",
-            "article_title": "법안명을 정확히 입력하세요.",
+            "article_title": "배포 사이트에서는 지원되지 않는 기능입니다.",
             "article_url": "",
-            "article_html": "법안명을 정확히 입력하세요. 예: '청소년보호법'",
+            "article_html": "배포 사이트에서는 지원되지 않는 기능입니다.",
             "total_comments": 0,
             "positive_count": 0,
             "negative_count": 0,
@@ -213,131 +200,9 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
             "size": 1,
             "result": "",
         })
+    
 
-    sentiment_row = (
-        db.query(NewsSentiment)
-        .filter(NewsSentiment.title == title)
-        .order_by(NewsSentiment.id)
-        .first()
-    )
-
-    if sentiment_row:
-    # ✔ 존재할 경우 해당 id 기준으로 페이지 번호 계산
-        sentiment_id = sentiment_row.id
-
-        # 전체 몇 개 있는지 알아야 페이지 번호 계산 가능
-        all_ids = db.query(NewsSentiment.id).order_by(NewsSentiment.id).all()
-        all_ids_list = [r[0] for r in all_ids]
-
-        try:
-            index = all_ids_list.index(sentiment_id)
-            per_page = 1
-            page = (index // per_page) + 1
-            # 🔁 페이지로 리다이렉트
-            return RedirectResponse(url=f"/index_news?page={page}", status_code=302)
-        except ValueError:
-            pass  # 못 찾으면 그냥 분석 진행
-
-
-    # 1. 기사 찾기
-    result = search_news_unique(title)
-    if not result:
-        return templates.TemplateResponse("index_news.html", {
-            "request": request,
-            "error": f"'{title}' 관련 뉴스 기사를 찾을 수 없습니다.",
-            "title": "",
-            "article_title": f"'{title}' 관련 뉴스 기사를 찾을 수 없습니다.",
-            "article_url": "",
-            "article_html": " 관련 뉴스 기사를 찾을 수 없습니다.",
-            "total_comments": 0,
-            "positive_count": 0,
-            "negative_count": 0,
-            "neutral_count": 0,
-            "total": 0,
-            "comments": [],
-            "query": title,
-            "dash_url": "",
-            "has_prev": False,
-            "has_next": False,
-            "current_page": 1,
-            "total_pages": 1,
-            "start_page": 1,
-            "end_page": 1,
-            "size": 1,
-            "result": "",
-        })
-
-    news_title, news_url, comment_count, sim = result
-    comment_url = news_url.replace("/article/", "/article/comment/")
-
-    # 2. 댓글 수집
-    options = Options()
-    options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
-
-    try:
-        comments = load_comments(driver, comment_url)
-    finally:
-        driver.quit()
-
-    # 3. 감정 분석
-    sentiment_result = analyze_sentiment(comments)
-    print(f"분석 결과 디버깅 : {sentiment_result}\n")
-
-    # 원래 comments 딕셔너리 리스트 → 템플릿이 원하는 필드명으로 변환
-    comment_objs = [
-        SimpleNamespace(
-            author=c.get("작성자", ""), 
-            text=c.get("댓글", ""),  
-            sentiment=c.get("감정", ""),
-            date=c.get("작성일자", ""),
-            like=c.get("공감수", 0),
-            dislike=c.get("비공감수", 0)
-        )
-        for c in comments
-    ]
-
-    print(comment_objs[0].text)  # 또는 .author
-    news_html = get_article_body(news_url.strip())
-
-
-    dash_app_live = create_dash_app_from_result(sentiment_result)
-
-    app.mount("/dash_news_app_live", WSGIMiddleware(dash_app_live.server))
-
-    dash_url_live = f"/dash_news_app_live/"
-
-    return templates.TemplateResponse("index_news.html", {
-        "request": request,
-        "error": "",
-        "title": title,
-        "article_title": news_title,
-        "article_url": news_url,
-        "article_html": news_html,
-        "total_comments": len(comment_objs),
-        "positive_count": sentiment_result["긍정적 인식"],
-        "negative_count": sentiment_result["부정적 인식"],
-        "neutral_count": sentiment_result["중립"],
-        "total": sum(sentiment_result.values()),
-        "comments": comment_objs,  # 여기만 핵심
-        "query": title,
-        "dash_url_live": dash_url_live,
-        "dash_url_news": "",
-        "has_prev": False,
-        "has_next": False,
-        "current_page": 1,
-        "total_pages": 1,
-        "start_page": 1,
-        "end_page": 1,
-        "size": 1,
-        "result": "",
-    })
-
-
-
-
+    
 
 # db  기반 기본 페이지
 @app.get("/public_opinion")
@@ -441,3 +306,4 @@ def get_index_news(request: Request, page: int = 1, db: Session = Depends(get_db
         "dash_url_live": "",
         "dash_url_news": dash_url_news
     })
+

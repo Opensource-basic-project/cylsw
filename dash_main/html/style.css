@@ -1,3 +1,8 @@
+
+.body {
+  margin-bottom: 200px;
+}
+
 .div,
 .div * {
   box-sizing: border-box;
@@ -1670,7 +1675,7 @@
 }
 .div63 {
   flex-shrink: 0;
-  width: 201.65px;
+  width: 129.65px;
   height: 141.04px;
   position: static;
 }
@@ -1706,6 +1711,7 @@
   font-weight: 700;
   position: absolute;
   left: 53px;
+  width: 201.65px;
   top: 67.27px;
 }
 .div67 {
@@ -3244,6 +3250,7 @@
 }
 .boardname {
   color: #ffffff;
+  font-weight: bold;
   text-align: left;
   font-family: "NicoMoji-Regular", sans-serif;
   font-size: 43px;
@@ -3252,8 +3259,9 @@
   font-weight: 400;
   text-transform: uppercase;
   position: relative;
-  width: 299.63px;
+  width: auto;
   height: 68px;
+  margin-left:100px;
   display: flex;
   align-items: center;
   justify-content: flex-start;

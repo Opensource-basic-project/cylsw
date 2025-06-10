@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>메인 대시보드</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/dash_main/html/style.css">
@@ -153,131 +154,12 @@
        -webkit-font-smoothing: antialiased;
     }
    
-    .item-1, .item-2, .item-4, .item-5, .item-6 {
-      border-radius: 10px;
-      padding: 0 12px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      height: 31px;
-      overflow: hidden;
-      flex-grow: 1;      /* 비율만큼 늘어남 */
-      flex-basis: 0;     /* 기본 크기를 0으로 설정 */
-      min-width: 0;      /* 내용이 넘쳐도 줄어들 수 있게 함 */
-      background: #e6e7ea;
-    }
 
-    .active {
-      background-color: white;
-      color: black !important;
-      font-weight: bold !important;
+    a {
+    color: inherit;
+    text-decoration: none;
     }
-
-    a.active {
-      color: black !important;
-      font-weight: bold !important;
-    }
-
-    .item-1.active a {
-      color: black !important;
-      font-weight: bold !important;
-    }
-
-    .item-1 a,
-    .item-2 a,
-    .item-4 a,
-    .item-5 a,
-    .item-6 a {
-      color: black;
-      font-weight: bold;
-    }
-
-
-    .div01 {
-      color: #000000;
-      text-align: center;
-      font-family: "Inter-Bold", sans-serif;
-      font-size: 18px;
-      line-height: 150%;
-      font-weight: 700;
-      position: relative;
-      width: auto;
-      height: 21px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .div02 {
-      color: #000000;
-      text-align: left;
-      font-family: "Inter-Bold", sans-serif;
-      font-size: 18px;
-      line-height: 150%;
-      font-weight: 700;
-      position: relative;
-      width: 1000px;
-      height: auto;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
-    .div03 {
-      color: var(--text-primary, #000000);
-      text-align: left;
-      font-family: "Inter-Bold", sans-serif;
-      font-size: 18px;
-      line-height: 150%;
-      font-weight: 700;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      width: auto;
-    }
-    .div04 {
-      color: var(--text-primary, #000000);
-      text-align: left;
-      font-family: "Inter-Bold", sans-serif;
-      font-size: 18px;
-      line-height: 150%;
-      font-weight: 700;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      width: auto;
-    }
-
-    .div05 {
-      color: var(--text-primary, #000000);
-      text-align: left;
-      font-family: "Inter-Bold", sans-serif;
-      font-size: 18px;
-      line-height: 150%;
-      font-weight: 700;
-      position: relative;
-      width: auto;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
-
-
-
-    .div00 {
-      background: #364a79;
-      padding: 10px 60px 10px 6px;
-      display: flex;
-      flex-direction: row;
-      gap: 36px;
-      align-items: center;
-      justify-content: flex-start;
-      align-self: stretch;
-      flex-shrink: 0;
-      height: 85px;
-      position: relative;
-    }
+    .divA,
     .divA * {
       box-sizing: border-box;
     }
@@ -287,8 +169,6 @@
       position: relative;
       overflow: visible;
     }
-
-
     .div2A {
       display: flex;
       flex-direction: column;
@@ -307,47 +187,108 @@
       flex-shrink: 0;
       position: relative;
     }
-
-    .boardname0 {
-      color: #ffffff;
-      font-weight: bold;
-      text-align: left;
-      font-family: "NicoMoji-Regular", sans-serif;
-      font-size: 43px;
-      line-height: 150%;
-      letter-spacing: -0.01em;
-      font-weight: 400;
-      text-transform: uppercase;
-      position: relative;
-      width: auto;
-      height: 68px;
-      margin-left:100px;
+    .div4A {
+      background: #364a79;
+      padding: 10px 60px 10px 6px;
       display: flex;
+      flex-direction: row;
+      gap: 36px;
       align-items: center;
       justify-content: flex-start;
+      align-self: stretch;
+      flex-shrink: 0;
+      height: 85px;
+      position: relative;
     }
 
+
+    .div5A {
+      background: #e6e7ea;
+      border-radius: 10px;
+      padding: 4px 17px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      height: 42px;
+      width: 55%;
+      margin: 0 auto;
+      position: relative;
+    }
+   
+    
     menu, ol, ul {
         list-style-type: none;
         margin: 0;
         padding: 0;
     }
 
-    .div5A {
-      background: #e6e7ea;
-      border-radius: 10px;
-      padding: 4px 4px 4px 17px;
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      align-items: flex-start;
-      justify-content: center;
-      flex-shrink: 0;
-      width: 55%;
-      height: 42px;
-      position: relative;
-      margin: 0 auto;
-    }
+
+      .item {
+        flex-grow: 1;           /* ✅ 비율 균등 분배 */
+        flex-basis: 0;          /* ✅ 초기 너비 0으로 설정 */
+        min-width: 0;           /* ✅ 넘침 방지 */
+        position: relative;
+        padding: 0 12px;
+        height: 31px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e6e7ea;
+        border-radius: 10px;
+        font-family: "Inter-Bold", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #000;
+        white-space: nowrap;
+        cursor: pointer;
+        z-index: 10000;
+      }
+
+      /* 드롭다운 메뉴 */
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 6px 0;
+        list-style: none;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-width: 100%;
+      }
+
+      .dropdown-menu li {
+        padding: 6px 16px;
+      }
+
+      .dropdown-menu li a {
+        text-decoration: none;
+        color: #333;
+        font-size: 14px;
+        display: block;
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+
+      /* 활성 메뉴 표시용 */
+      .active {
+        background: #fff;
+      }
+      .plenary-container {
+        margin-top: 6px;
+        margin-left: -20px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 3개씩 한 줄 */
+        gap: 20px 0px; /* 카드 사이 간격 */
+        
+      }
+            
+
 
     .wrapper {
       position: absolute;         /* fixed 말고 absolute로 바꿔야 scroll 대응 가능 */
@@ -382,22 +323,35 @@
     }
 
 
-   </style>
-  <title>Document</title>
+  </style>
 </head>
 <body>
   
-  <div class="divA">
     <div class="div2A">
       <div class="div3A">
-        <div class="div00">
-          <div class="boardname0">DASHBOARD</div>
+        <div class="div4A">
+          <div class="boardname">DASHBOARD</div>
           <div class="div5A">
-            <div class="item-1 active"><div class="div01"><a href="/dashboard">메인 대시보드</a></div></div>
-            <div class="item-2"><div class="div02"><a href="/plenary">본회의 법안정보</a></div></div>
-            <div class="item-4"><div class="div03"><a href="/legislation_notice">입법예고</a></div></div>
-            <div class="item-5"><div class="div04"><a href="/foreign_legislation">국외 입법정보</a></div></div>
-            <div class="item-6"><div class="div05"><a href="/public_opinion">법안 여론분석</a></div></div>
+            <div class="item active"><a href="/dashboard">메인 대시보드</a></div>
+            <div class="item"><a href="/plenary">본회의 법안정보</a></div>
+
+            <div class="item dropdown">
+              <a href="/legislation_notice">입법예고</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislation_notice_ongoing">진행 중 입법예고</a></li>
+                <li><a href="/legislation_notice_ended">종료된 입법예고</a></li>
+              </ul>
+            </div>
+
+            <div class="item dropdown">
+              <a href="/foreign_legislation">국외 입법정보</a>
+              <ul class="dropdown-menu">
+                <li><a href="/legislative_trends">주요국 입법동향</a></li>
+                <li><a href="/legislative_examples">주요국 입법례</a></li>
+              </ul>
+            </div>
+
+            <div class="item"><a href="/public_opinion">법안 여론분석</a></div>
           </div>
         </div>
       </div>
@@ -416,100 +370,56 @@
           </div>
         </div>
         <div class="div5">
-          <div class="div6">
+          <a href="/foreign_legislation"><div class="div6">
             <div class="div7">국외 입법정보</div>
             <div class="div8">국외 입법 현황 분석</div>
             <img class="vector" src="vector0.svg" />
-          </div>
+          </div></a>
         </div>
         <div class="div9">
-          <div class="div10"></div>
+          <div class="div10">
+              <div class="plenary-container" style="overflow: visible; ">
+                {% for item in plenary_mlist %}
+                  <div class="div13">
+                    <div class="rectangle-1169" style="height:45px; margin-top:5px;"></div>
+                    <div class="frame-90" style="margin-top:7px;">
+                      <div class="frame-91">
+                        <div class="_2025-04-11">{{ item.propose_date }}</div>
+                        <div class="_10">
+                          {{ item.bill_title[:20] ~ ('...' if item.bill_title|length > 15 else '') }} 
+                          <div class="div14" style="margin-left: 270px; margin-top:-20px; width:100px;">
+                            {{ item.proposer[:5] ~ ('...' if item.proposer|length > 5 else '') }}</div>
+                        </div>
+                      
+                      <div class="new" >
+                          {% if item.proc_result == '원안가결' or item.proc_result == '수정가결' %} <!--가결-->
+                                <img class="lets-icons-check-fill4" src="lets-icons-check-fill3.svg" style="margin-top: -8px; margin-left:20px" />
+                          {% elif item.proc_result == '철회' %} <!--부결-->
+                                <img class="lets-icons-check-fill4" src="div22.svg" style="height:25px; margin-left:20px" />
+                          {% endif %}
+                      </div>
+                      </div>
+                      
+                    </div>
+                  
+                  </div>
+                {% endfor %}
+              </div>
+          </div>
           <div class="div11"></div>
           <div class="list2">
             <div class="div12">
-              <div class="div13">
-                <div class="rectangle-1169"></div>
-                <div class="frame-90">
-                  <div class="frame-91">
-                    <div class="_2025-04-11">2025-04-11</div>
-                    <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                  </div>
-                  <div class="div14">김도읍</div>
-                </div>
-                <img class="lets-icons-check-fill" src="lets-icons-check-fill0.svg" />
-              </div>
-              <div class="div13">
-                <div class="rectangle-1169"></div>
-                <div class="frame-90">
-                  <div class="frame-91">
-                    <div class="_2025-04-11">2025-04-11</div>
-                    <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                  </div>
-                  <div class="div14">김도읍</div>
-                </div>
-                <img
-                  class="lets-icons-check-fill2"
-                  src="lets-icons-check-fill1.svg"
-                />
-              </div>
-              <div class="div13">
-                <div class="rectangle-1169"></div>
-                <div class="frame-90">
-                  <div class="frame-91">
-                    <div class="_2025-04-11">2025-04-11</div>
-                    <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                  </div>
-                  <div class="div14">김도읍</div>
-                </div>
-                <img
-                  class="lets-icons-check-fill3"
-                  src="lets-icons-check-fill2.svg"
-                />
-              </div>
+              <!--여기 블럭 나머지?-->
             </div>
           </div>
-          <div class="card">
+          <a href="/plenary"><div class="card">
             <div class="div15">본회의 법안정보</div>
             <div class="div16">법안별 본회의 심의결과</div>
             <img class="vector2" src="vector1.svg" />
-          </div>
+          </div></a>
           <div class="gravity-ui-circle-xmark-fill"></div>
           <img class="div17" src="div22.svg" />
-          <div class="div18">
-            <div class="div13">
-              <div class="rectangle-1169"></div>
-              <div class="frame-90">
-                <div class="frame-91">
-                  <div class="_2025-04-11">2025-04-11</div>
-                  <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                </div>
-                <div class="div14">김도읍</div>
-              </div>
-              <img class="lets-icons-check-fill4" src="lets-icons-check-fill3.svg" />
-            </div>
-            <div class="div13">
-              <div class="rectangle-1169"></div>
-              <div class="frame-90">
-                <div class="frame-91">
-                  <div class="_2025-04-11">2025-04-11</div>
-                  <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                </div>
-                <div class="div14">김도읍</div>
-              </div>
-              <img class="lets-icons-check-fill5" src="lets-icons-check-fill4.svg" />
-            </div>
-            <div class="div13">
-              <div class="rectangle-1169"></div>
-              <div class="frame-90">
-                <div class="frame-91">
-                  <div class="_2025-04-11">2025-04-11</div>
-                  <div class="_10">주택법 일부개정법률안 (김도읍의원 등 10명)</div>
-                </div>
-                <div class="div14">김도읍</div>
-              </div>
-              <img class="lets-icons-check-fill6" src="lets-icons-check-fill5.svg" />
-            </div>
-          </div>
+        
           <div class="div19">
             <img class="div20" src="div31.svg" />
             <div class="frame-64">
@@ -545,20 +455,20 @@
         </div>
         <div class="div28"></div>
         <div class="div29">
-          <div class="frame-92">
-            <a href="/public_opinion"><div class="div21">자세히 보기</div></a>
+          <a href="/public_opinion"><div class="frame-92">
+            <div class="div21">자세히 보기</div>
             <img class="div30" src="div47.svg" />
-          </div>
+          </div></a>
         </div>
-        <div class="div31">
+        <a href="/public_opinion"><div class="div31">
           <div class="div32">법안 여론분석</div>
           <div class="div33">법안 관련 기사 / 기사 여론 분석</div>
           <img class="vector5" src="vector4.svg" />
-        </div>
+        </div></a>
         <div class="div34">
           <div class="div35">
             <div class="div36">
-              <a href="https://www.law.go.kr/LSW/nwRvsLsPop.do?p_epubdt="><div class="div37">최근 통과된 법안</div></a>
+              <a href="https://www.law.go.kr/LSW/nwRvsLsPop.do?p_epubdt="><div class="div37">최근 공포된 법안</div></a>
               <img class="vector6" src="vector5.svg" />
             </div>
             <div class="frame-80">
@@ -607,47 +517,43 @@
         </div>
         <div class="div51">
           <div class="frame-96">
-            <div class="frame-76">
+            <a href="/legislation_notice_ongoing"><div class="frame-76">
               <div class="div52">진행중</div>
-            </div>
+            </div></a>
           </div>
           <div class="frame-972">
-            <div class="frame-762">
+            <a href="/legislation_notice_ended"><div class="frame-762">
               <div class="div53">종료</div>
-            </div>
+            </div></a>
           </div>
         </div>
         <div class="div54">
-          <div class="frame-94">
+          <a href="/legislation_notice"><div class="frame-94">
             <div class="group-2094">
               <div class="div55">입법예고</div>
-              <div class="div56">입법 이전 법안 정보 공개</div>
+              <div class="div56" style="margin-left:10px;">입법 이전 법안 정보 공개</div>
               <img class="vector10" src="vector9.svg" />
             </div>
-          </div>
+          </div></a>
         </div>
         <div class="div57">
           <div class="card7"></div>
-          <div class="div58">
+          <div class="div58" style="margin-left:17px; margin-top:14px;">
             <span>
               <span class="div-58-span">
-                <br />
-                근로자의 날 제정에 관한 법률 전부개정법률안
-                <br />
-                근로기준법 일부개정법률안
-                <br />
+                {% for item in noticelaw %}
+                  {% if item.status == 'ongoing' %}
+                    {{ item.bill_name[:20] ~ ('...' if item.bill_name|length > 25 else '') }}<br />
+                  {% endif %}
+                {% endfor %}
               </span>
+              
               <span class="div-58-span2">
-                의료법 일부개정법률안
-                <br />
-                이민사회기본법안
-                <br />
-                근로기준법 일부개정법률안
-                <br />
-                근로기준법 일부개정법률안
-                <br />
-                <br />
-                <br />
+                {% for item in noticelaw %}
+                  {% if item.status == 'ended' %}
+                     {{ item.bill_name[:20] ~ ('...' if item.bill_name|length > 25 else '') }}<br />
+                  {% endif %}
+                {% endfor %}
               </span>
             </span>
           </div>
@@ -681,7 +587,7 @@
               </div>
               <div class="div63">
                 {% for bill in top_5_bills|reverse %}
-                  <div class="div{{ 64 + loop.index0 }}">{{ bill.title }}</div>
+                  <div class="div{{ 64 + loop.index0 }}" >{{ bill.title }}</div>
                 {% endfor %}
 
                 <div class="frame-112">
@@ -732,47 +638,54 @@
           <div class="card8">
             <div class="div75">주요국 입법례</div>
             <div class="_2022-08-16-65-65">
-              <span>
-                <span class="_2022-08-16-65-65-span">
-                  2022-08-16 주요국의 고령자 교육 입법례
+              {% if examples and examples|length > 0 %}
+                {% set example = examples[0] %}
+                <span>
+                  <span class="_2022-08-16-65-65-span">
+                    {{ example.issue_date }} {{ example.title }}
+                  </span>
+                  <span class="_2022-08-16-65-65-span2">
+                    <br />
+                  </span>
+                  <span class="_2022-08-16-65-65-span3">
+                    관련 법령 ) {{ example.rel_law }} &nbsp;&nbsp;
+                    위원회 ) {{ example.asc_name }} 분야 ) 평생교육
+                    <br />
+                  </span>
+                  <span class="_2022-08-16-65-65-span2">
+                    {{ example.proposal_text[:60] ~ ('...' if example.proposal_text|length > 60 else '')  }}
+                    <br /><br /><br />
+                  </span>
                 </span>
-                <span class="_2022-08-16-65-65-span2">
-                  <br />
-                </span>
-                <span class="_2022-08-16-65-65-span3">
-                  관련 법령 ) 평생교육법, 교육기본법, 저출산ㆍ고령사회기본법,
-                  노인복지법 등 위원회 ) 교육위원회 분야 ) 평생교육
-                  <br />
-                </span>
-                <span class="_2022-08-16-65-65-span2">
-                  고령인구는 통상 65세 이상의 인구를 의미하는데 고령인구는 통상 65세
-                  이상의 인구를 의미하는데 우리나라의 경우 ...
-                  <br />
-                  <br />
-                  <br />
-                </span>
-              </span>
+              {% else %}
+                <p>입법례 데이터가 없습니다.</p>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="div76">
           <div class="card9">
             <div class="div75">주요국 입법동향</div>
-            <div class="_2017-2017-01-31-2006-2014">
-              <span>
-                <span class="_2017-2017-01-31-2006-2014-span">
-                  2017년 웨일즈법 영국 법령 2017-01-31 법제사법위원회
-                  <br />
-                </span>
-                <span class="_2017-2017-01-31-2006-2014-span2">
-                  웨일즈의 정부와 법원 등의 기능을 규정하기 위하여 2006년 웨일즈
-                  정부법과 2014년 웨일즈법을 개정함. 헌법체제, 입법 및 행정, 웨일즈의
-                  사법, 보칙, 부칙 등의 개정을 주요내용으로 함...
-                  <br />
-                  <br />
-                </span>
-              </span>
-            </div>
+              {% if trends and trends|length > 0 %}
+                {% set trend = trends[0] %}
+               
+                  <div class="_2017-2017-01-31-2006-2014">
+                    <span>
+                      <span class="_2017-2017-01-31-2006-2014-span">
+                        
+                        {{ trend.procl_date }} {{ trend.title[:20] ~ ('...' if trends.title|length > 25 else '') }} {{ trend.nation_name }} {{ trend.procl_date }} {{ trend.org_law_name[:20] ~ ('...' if trends.org_law_name|length > 25 else '') }}
+                        <br />
+                      </span>
+                      <span class="_2017-2017-01-31-2006-2014-span2">
+                        {{ (trend.proposal_text|replace('<br>', '') )[:120] ~ ('...' if (trend.proposal_text|replace('<br>', '') )|length > 120 else '') | safe }}
+                        <br /><br />
+                      </span>
+                    </span>
+                  </div>
+              
+              {% else %}
+                <p>입법동향 데이터가 없습니다.</p>
+              {% endif %}
             <div class="tabler-zoom">
               <div class="slice-1"></div>
             </div>
@@ -781,10 +694,10 @@
         <div class="frame-111">
           <div class="frame-109">
             <div class="tabler-zoom2">
-              <div class="frame-110">
-                <a href="/foreign_legislation"><div class="div77">자세히 보기</div></a>
+             <a href="/foreign_legislation"><div class="frame-110">
+                <div class="div77">자세히 보기</div>
                 <img class="div78" src="div105.svg" />
-              </div>
+              </div></a>
               <div class="slice-12"></div>
             </div>
           </div>
@@ -830,6 +743,8 @@
       </div>
     </div>
 
-    <div style="height: 200px;"></div>
+
   </body>
+  <div style="height: 200px;"></div>
   </html>
+  <div style="height: 200px;"></div>

@@ -16,7 +16,7 @@ DB_PATH = f"sqlite:///{BASE_DIR / 'bills.db'}"
 
 Base = declarative_base()
 engine = create_engine(DB_PATH, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal_News = sessionmaker(bind=engine)
 
 class NewsSentiment(Base):
     __tablename__ = "news_sentiment"
@@ -58,7 +58,7 @@ def init_sentiment_table():
 
 #  분석 여부 확인
 def is_sentiment_already_analyzed(bill_id: int, news_url: str) -> bool:
-    session = SessionLocal()
+    session = SessionLocal_News()
     try:
         return session.query(NewsSentiment).filter_by(bill_id=bill_id, news_url=news_url).first() is not None
     finally:
@@ -67,7 +67,7 @@ def is_sentiment_already_analyzed(bill_id: int, news_url: str) -> bool:
 
 
 def insert_sentiment_result(bill_id: int, title: str, news_url: str, sentiment_counts: dict):
-    session = SessionLocal()
+    session = SessionLocal_News()
     try:
         new_entry = NewsSentiment(
             bill_id=bill_id,
@@ -88,7 +88,7 @@ def insert_sentiment_result(bill_id: int, title: str, news_url: str, sentiment_c
 
 
 def insert_news_comments(bill_id: int, news_url: str, comments: list[dict]):
-    session = SessionLocal()
+    session = SessionLocal_News()
     try:
         for c in comments:
             session.add(NewsComment(

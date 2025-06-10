@@ -3,7 +3,14 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = "sqlite:///legislation.db"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    pool_size=10,           # 기본 연결 수: 10
+    max_overflow=20,        # 최대 오버플로우: 20 (총 30 연결 가능)
+    pool_timeout=15,        # 대기 시간: 15초
+    pool_recycle=1800       # 연결 재사용 주기: 30분
+)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()
 

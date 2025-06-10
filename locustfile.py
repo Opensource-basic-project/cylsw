@@ -37,6 +37,6 @@ class WebsiteUser(HttpUser):
     
     @task(1)
     def example(self):
-        self.client.get("/legislation_ended/PRC_L2T5T0R5S2Q2R1P0Q2Y8W1X7V8W1U7")
+        self.client.get("/public_opinion")
         
        # /*보험, 마약,약물, 장애인복지*/

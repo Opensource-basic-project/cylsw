@@ -92,6 +92,7 @@ def get_plenary_info_main():
                 "propose_date": plenary.propose_dt or "-",
                 "proc_result": plenary.plenary_vote_result or plenary.proc_result_cd or "-",
                 "proposer": plenary.proposer or "-",
+                "bill_id": plenary.bill_id or "-"
             }
             plenary_mlist.append(item)
 

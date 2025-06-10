@@ -385,11 +385,13 @@
                     <div class="frame-90" style="margin-top:7px;">
                       <div class="frame-91">
                         <div class="_2025-04-11">{{ item.propose_date }}</div>
+                        <a href="/plenary/{{ item.bill_id }}">
                         <div class="_10">
                           {{ item.bill_title[:20] ~ ('...' if item.bill_title|length > 15 else '') }} 
                           <div class="div14" style="margin-left: 270px; margin-top:-20px; width:100px;">
                             {{ item.proposer[:5] ~ ('...' if item.proposer|length > 5 else '') }}</div>
                         </div>
+                        </a>
                       
                       <div class="new" >
                           {% if item.proc_result == '원안가결' or item.proc_result == '수정가결' %} <!--가결-->

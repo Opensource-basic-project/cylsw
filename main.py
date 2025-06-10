@@ -43,7 +43,13 @@ from GetNewsReact import load_comments, analyze_sentiment
 from insert_NewsScript import get_article_body
 
 # 메인 기능 블럭
-from main_load import get_latest_laws, get_latest_news
+from main_load import (
+    get_latest_laws, 
+    get_latest_news, 
+    get_plenary_info_main,
+    get_notice_info_main,
+    get_foreign_info_main
+    )
 
 # 기타
 from types import SimpleNamespace
@@ -52,27 +58,24 @@ from pathlib import Path
 import math
 import os
 
-init_db()
+init_db() # db 초기화
 
+# db 경로 지정
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE_URL = f"sqlite:///{BASE_DIR / 'bills.db'}"
 
-
 # SQLAlchemy 기본 설정
-#Base = declarative_base()
 engine = create_engine(DATABASE_URL, echo=False)
 app = FastAPI()
-templates = Jinja2Templates(directory="dash_news/html")
+templates = Jinja2Templates(directory="dash_news/html")         #뉴스 html 연결
+templates_main = Jinja2Templates(directory="dash_main/html")    #메인 html 연결
 
-
-# 시작시점에만.
 dash = create_dash_app_from_result()  # 초기 bill_id 없이
+# plotly 그래프들 mount
 app.mount("/dash_news_view", WSGIMiddleware(dash.server))
-
-
 app.mount("/dash_news_app_live", WSGIMiddleware(create_dash_app_from_result_in().server))
-
-
+app.mount("/dash/", WSGIMiddleware(create_dash_app().server))
+app.mount("/dash2/", WSGIMiddleware(create_Cdash_app().server))
 
 # DB 연결 함수
 def get_db():
@@ -87,24 +90,17 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 정적 파일 경로 mount (=> 병합후 경로수정 static => static_)
 app.mount("/static_", StaticFiles(directory=os.path.join(BASE_DIR, "dash_news/html")), name="static_")
 
-# Mount Dash apps
-app.mount("/dash/", WSGIMiddleware(create_dash_app().server))
-app.mount("/dash2/", WSGIMiddleware(create_Cdash_app().server))
 
-# 실제 파일 경로
 BASE_DIR = Path(__file__).resolve().parent
 HTML_DIR = BASE_DIR / "dash_main" / "html"
-
-# 정적 파일 서빙
 app.mount("/dash_main/html", StaticFiles(directory=str(HTML_DIR)), name="html")
 
 BASE_DIR_ = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR_ / "dash_main" / "assets"
-
 app.mount("/dash_main/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
 
 
-templates_main = Jinja2Templates(directory="dash_main/html")
+
 
 
 
@@ -128,12 +124,20 @@ async def read_index(request: Request):
     law_list = get_latest_laws(n=3)
     latest_news = get_latest_news()
     top_5_bills = get_top_5_bills()
+    plenary_main = get_plenary_info_main()
+    noticelaw = get_notice_info_main()
+    examples, trends = get_foreign_info_main()
+    
 
     return templates_main.TemplateResponse("index.html", {
         "request": request,
         "laws": law_list,
         "latest_news": latest_news,
-        "top_5_bills": top_5_bills
+        "top_5_bills": top_5_bills,
+        "plenary_mlist": plenary_main,
+        "noticelaw": noticelaw,
+        "examples" : examples,
+        "trends": trends,
     })
 
 
@@ -164,7 +168,7 @@ async def redirect_to_dashboard():
 
 
 
-
+# 여론분석 뉴스 검색어 처리
 @app.post("/analyze_news")
 def analyze_news(request: Request, title: str = Form(...), db: Session = Depends(get_db)):
     title = title.strip()
@@ -204,7 +208,7 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
     )
 
     if sentiment_row:
-    # ✔ 존재할 경우 해당 id 기준으로 페이지 번호 계산
+    # 존재할 경우 해당 id 기준으로 페이지 번호 계산
         sentiment_id = sentiment_row.id
 
         # 전체 몇 개 있는지 알아야 페이지 번호 계산 가능
@@ -215,13 +219,13 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
             index = all_ids_list.index(sentiment_id)
             per_page = 1
             page = (index // per_page) + 1
-            # 🔁 페이지로 리다이렉트
+            #  페이지로 리다이렉트
             return RedirectResponse(url=f"/public_opinion?page={page}", status_code=302)
         except ValueError:
-            pass  # 못 찾으면 그냥 분석 진행
+            pass  # 못 찾으면 분석 진행
 
 
-    # 1. 기사 찾기
+    # 기사 찾기
     result = search_news_unique(title)
     if not result:
         return templates.TemplateResponse("index_news.html", {
@@ -252,7 +256,7 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
     news_title, news_url, comment_count, sim = result
     comment_url = news_url.replace("/article/", "/article/comment/")
 
-    # 2. 댓글 수집
+    # 댓글 수집
     options = Options()
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -264,7 +268,7 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
     finally:
         driver.quit()
     
-    # 3. 감정 분석
+    # 감정 분석
     sentiment_result = analyze_sentiment(comments)
 
     # 원래 comments 딕셔너리 리스트 → 템플릿이 원하는 필드명으로 변환
@@ -285,7 +289,7 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
     
     from shared_state import latest_sentiment_result
 
-    dash_url_live = "/dash_news_app_live/"
+    dash_url_live = "/dash_news_app_live/" 
     
     latest_sentiment_result["positive_count"] = sentiment_result["긍정적 인식"]
     latest_sentiment_result["negative_count"] = sentiment_result["부정적 인식"]

@@ -168,20 +168,21 @@ async def redirect_to_dashboard():
 
 
 
-# 여론분석 뉴스 검색어 처리
+# 여론분석 뉴스 검색어 처리 => 기능 비활성화 (selenium 접근 방지)
 @app.post("/analyze_news")
 def analyze_news(request: Request, title: str = Form(...), db: Session = Depends(get_db)):
     title = title.strip()
 
+    num = 1
 
-    if not title or not title.endswith(("법률안", "법안", "법")):
+    if num:
         return templates.TemplateResponse("index_news.html", {
             "request": request,
-            "error": "법안명을 정확히 입력하세요. 예: '청소년보호법'",
+            "error": "",
             "title": "",
-            "article_title": "법안명을 정확히 입력하세요.",
+            "article_title": "배포 사이트에서는 지원되지 않는 기능입니다.",
             "article_url": "",
-            "article_html": "법안명을 정확히 입력하세요. 예: '청소년보호법'",
+            "article_html": "배포 사이트에서는 지원되지 않는 기능입니다.",
             "total_comments": 0,
             "positive_count": 0,
             "negative_count": 0,
@@ -200,128 +201,6 @@ def analyze_news(request: Request, title: str = Form(...), db: Session = Depends
             "result": "",
         })
     
-    sentiment_row = (
-        db.query(NewsSentiment)
-        .filter(NewsSentiment.title == title)
-        .order_by(NewsSentiment.id)
-        .first()
-    )
-
-    if sentiment_row:
-    # 존재할 경우 해당 id 기준으로 페이지 번호 계산
-        sentiment_id = sentiment_row.id
-
-        # 전체 몇 개 있는지 알아야 페이지 번호 계산 가능
-        all_ids = db.query(NewsSentiment.id).order_by(NewsSentiment.id).all()
-        all_ids_list = [r[0] for r in all_ids]
-
-        try:
-            index = all_ids_list.index(sentiment_id)
-            per_page = 1
-            page = (index // per_page) + 1
-            #  페이지로 리다이렉트
-            return RedirectResponse(url=f"/public_opinion?page={page}", status_code=302)
-        except ValueError:
-            pass  # 못 찾으면 분석 진행
-
-
-    # 기사 찾기
-    result = search_news_unique(title)
-    if not result:
-        return templates.TemplateResponse("index_news.html", {
-            "request": request,
-            "error": f"'{title}' 관련 뉴스 기사를 찾을 수 없습니다.",
-            "title": "",
-            "article_title": f"'{title}' 관련 뉴스 기사를 찾을 수 없습니다.",
-            "article_url": "",
-            "article_html": " 관련 뉴스 기사를 찾을 수 없습니다.",
-            "total_comments": 0,
-            "positive_count": 0,
-            "negative_count": 0,
-            "neutral_count": 0,
-            "total": 0,
-            "comments": [],
-            "query": title,
-            "dash_url": "",
-            "has_prev": False,
-            "has_next": False,
-            "current_page": 1,
-            "total_pages": 1,
-            "start_page": 1,
-            "end_page": 1,
-            "size": 1,
-            "result": "",
-        })
-
-    news_title, news_url, comment_count, sim = result
-    comment_url = news_url.replace("/article/", "/article/comment/")
-
-    # 댓글 수집
-    options = Options()
-    options.add_argument("--headless=new")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
-
-    try:
-        comments = load_comments(driver, comment_url)
-    finally:
-        driver.quit()
-    
-    # 감정 분석
-    sentiment_result = analyze_sentiment(comments)
-
-    # 원래 comments 딕셔너리 리스트 → 템플릿이 원하는 필드명으로 변환
-    comment_objs = [
-        SimpleNamespace(
-            author=c.get("작성자", ""), 
-            text=c.get("댓글", ""),  
-            sentiment=c.get("감정", ""),
-            date=c.get("작성일자", ""),
-            like=c.get("공감수", 0),
-            dislike=c.get("비공감수", 0)
-        )
-        for c in comments
-    ]
-
-    news_html = get_article_body(news_url.strip())
-
-    
-    from shared_state import latest_sentiment_result
-
-    dash_url_live = "/dash_news_app_live/" 
-    
-    latest_sentiment_result["positive_count"] = sentiment_result["긍정적 인식"]
-    latest_sentiment_result["negative_count"] = sentiment_result["부정적 인식"]
-    latest_sentiment_result["neutral_count"] = sentiment_result["중립"]
-
-    return templates.TemplateResponse("index_news.html", {
-        "request": request,
-        "error": "",
-        "title": title,
-        "article_title": news_title,
-        "article_url": news_url,
-        "article_html": news_html,
-        "total_comments": len(comment_objs),
-        "positive_count": sentiment_result["긍정적 인식"],
-        "negative_count": sentiment_result["부정적 인식"],
-        "neutral_count": sentiment_result["중립"],
-        "total": sum(sentiment_result.values()),
-        "comments": comment_objs,  # 여기만 핵심
-        "query": title,
-        "dash_url_live": dash_url_live,
-        "dash_url_news": "",
-        "has_prev": False,
-        "has_next": False,
-        "current_page": 1,
-        "total_pages": 1,
-        "start_page": 1,
-        "end_page": 1,
-        "size": 1,
-        "result": "",
-    })
-
-
 
     
 

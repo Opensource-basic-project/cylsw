@@ -150,7 +150,8 @@ def notice_to_dict(notice):
         "notice_period": notice.notice_period or "-",
         "proposer": notice.proposer or "-",
         "announce_dt": notice.announce_dt or "-",
-        "link_url": notice.link_url or "#"
+        "link_url": notice.link_url or "#",
+        "bill_id" : notice.bill_id
     }
 
 

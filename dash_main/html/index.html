@@ -545,7 +545,7 @@
               <span class="div-58-span">
                 {% for item in noticelaw %}
                   {% if item.status == 'ongoing' %}
-                    {{ item.bill_name[:20] ~ ('...' if item.bill_name|length > 25 else '') }}<br />
+                    <a href="/legislation_ongoing/{{ item.bill_id }}">{{ item.bill_name[:20] ~ ('...' if item.bill_name|length > 25 else '') }}</a><br />
                   {% endif %}
                 {% endfor %}
               </span>

@@ -5,7 +5,7 @@
 import requests
 from bs4 import BeautifulSoup
 from dbmanage_News import BillNews
-from dbmanage_NewsReact import SessionLocal, NewsSentiment
+from dbmanage_NewsReact import SessionLocal_News, NewsSentiment
 from dash_news_app import create_dash_app_from_result
 import urllib.request
 import urllib.parse
@@ -15,9 +15,17 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dbmanage_News import Bill
 
+from db import (
+    SessionLocal, 
+    PlenaryBill, 
+    LegislationNotice, 
+    EndedLegislationNotice, 
+    ForeignLawTrend,
+    ForeignLawExample
+    )
 
 # 최신법안정보
-# 속도가 빠르고, 실시간 정보가 중요하므로 main 실행 시마다 추출하도록 함 
+# 속도가 빠르고, 실시간 정보가 중요하므로 main 실행 시마다 추출하도록 함 (js 가 아니라서 빨리 크롤링가능)
 def truncate(text, limit=10):
     return text[:limit] + "..." if len(text) > limit else text
 
@@ -69,11 +77,89 @@ def get_latest_laws(n=3):
     return law_list
 
 
-# 메인-여론분석 블럭
-def get_latest_news():
+# 메인-본회의 법안정보 블럭 (6개)
+
+def get_plenary_info_main():
     session = SessionLocal()
     try:
-        sentiment = session.query(NewsSentiment).order_by(NewsSentiment.analyzed_at.desc()).first()
+        # 가장 먼저 저장된 법안 6건 조회 ( propose_dt 기준 오름차순)
+        plenary_list = session.query(PlenaryBill).order_by(PlenaryBill.propose_dt.desc()).limit(6).all()
+
+        plenary_mlist = []
+        for plenary in plenary_list:
+            item = {
+                "bill_title": plenary.bill_name or "데이터가 없습니다.",
+                "propose_date": plenary.propose_dt or "-",
+                "proc_result": plenary.plenary_vote_result or plenary.proc_result_cd or "-",
+                "proposer": plenary.proposer or "-",
+            }
+            plenary_mlist.append(item)
+
+        return plenary_mlist
+
+    finally:
+        session.close()
+
+
+
+# 메인-입법예고 리스트 블럭 (6개)
+
+def get_notice_info_main():
+    session = SessionLocal()
+    try:
+        # 진행중 입법예고 조회 (최신순)
+        ongoing = session.query(LegislationNotice).order_by(
+            LegislationNotice.notice_period.desc()
+        ).limit(7).all()
+        
+        # 종료된 입법예고 조회 (최신순)
+        ended = session.query(EndedLegislationNotice).order_by(
+            EndedLegislationNotice.notice_period.desc()
+        ).limit(7).all()
+
+        # 상태 구분 필드 추가
+        combined_list = []
+        for notice in ongoing:
+            combined_list.append({
+                **notice_to_dict(notice),
+                "status": "ongoing"  # 진행중 표시
+            })
+            
+        for notice in ended:
+            combined_list.append({
+                **notice_to_dict(notice),
+                "status": "ended"  # 종료 표시
+            })
+
+        # 최종 정렬 (notice_period 기준)
+        combined_list.sort(
+            key=lambda x: x["notice_period"] or "",
+            reverse=True
+        )
+
+        return combined_list[:7]  # 상위 6개 반환
+
+    finally:
+        session.close()
+
+def notice_to_dict(notice):
+    """공통 필드 변환 함수"""
+    return {
+        "bill_name": notice.bill_name or "데이터 없음",
+        "notice_period": notice.notice_period or "-",
+        "proposer": notice.proposer or "-",
+        "announce_dt": notice.announce_dt or "-",
+        "link_url": notice.link_url or "#"
+    }
+
+
+
+
+# 메인-여론분석 블럭
+def get_latest_news():
+    session = SessionLocal_News()
+    try:
+        sentiment = session.query(NewsSentiment).order_by(NewsSentiment.analyzed_at.asc()).first() # 뉴스기사 정렬 1page 로 매칭
 
         if sentiment:
             news = session.query(BillNews).filter_by(bill_id=sentiment.bill_id).first()
@@ -84,7 +170,7 @@ def get_latest_news():
             total_comments = pos + neg + neu
 
             sentiment_data = {
-                "title": (sentiment.title[:10] + "…") if news and len(sentiment.title) > 10 else (sentiment.title if news else "기사 제목 없음"),
+                "title": (sentiment.title[:8] + "…") if news and len(sentiment.title) > 10 else (sentiment.title if news else "기사 제목 없음"),
                 "news_bill_id": sentiment.id,
                 "news_title": (news.news_title[:13] + "…") if news and len(news.news_title) > 13 else (news.news_title if news else "기사 제목 없음"),
                 "news_body": (news.body[:200] + "…") if news and len(news.body) > 200 else (news.body if news else "기사 본문 없음"),
@@ -94,7 +180,7 @@ def get_latest_news():
                 "negative_count": neg,
                 "neutral_count": neu,
             }
-            return sentiment_data
+            return sentiment_data 
         else:
             return None
     except Exception as e:
@@ -105,8 +191,69 @@ def get_latest_news():
 
 
 
+# 메인-국외입법 블럭
+def get_foreign_info_main():
+    session = SessionLocal()
+    try:
+        # 주요국 입법례 - 최신순 1개
+        foreign_examples = (
+            session.query(ForeignLawExample)
+            .order_by(ForeignLawExample.issue_date.desc())
+            .limit(1)
+            .all()
+        )
+        
+        # 주요국 입법동향 - 최신순 1개  
+        foreign_trends = (
+            session.query(ForeignLawTrend)
+            .order_by(ForeignLawTrend.procl_date.desc())
+            .limit(1)
+            .all()
+        )
 
-#법안 랭킹
+        # 입법례 데이터 포맷팅
+        examples_list = []
+        for example in foreign_examples:
+            item = {
+                "title": example.title or "제목 없음",
+                "issue_date": example.issue_date or "-",
+                "rel_law": example.rel_law or "-",
+                "asc_name": example.asc_name or "-",
+                "proposal_text": example.proposal_text or "",
+                "detail_url": example.detail_url or "#"
+            }
+            examples_list.append(item)
+
+        # 입법동향 데이터 포맷팅
+        trends_list = []
+        for trend in foreign_trends:
+            item = {
+                "title": trend.title or "제목 없음",
+                "procl_date": trend.procl_date or "-",
+                "nation_name": trend.nation_name or "-",
+                "org_law_name": trend.org_law_name or "-",
+                "proposal_text": trend.proposal_text or "",
+                "detail_url": trend.detail_url or "#"
+            }
+            trends_list.append(item)
+
+        return examples_list, trends_list
+
+    finally:
+        session.close()
+
+
+
+
+
+
+
+
+
+
+
+
+#법안 랭킹 
 from dbmanage_News import Bill
 from dbmanage_ranking import TrendingBill, Base, init_ranking_db  
 
@@ -192,5 +339,5 @@ def main():
     save_ranking_to_db(session, top_5)
     session.close()
 
-if __name__ == "__main__":
+if __name__ == "__main__": # 법안랭킹 테스트메인
         main()
